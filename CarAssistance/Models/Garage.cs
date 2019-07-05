@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace CarAssistance.Models
@@ -8,9 +9,10 @@ namespace CarAssistance.Models
     {
         public int GarageId { get; set; }
         public List<Car> Car { get; set; }
-        public string NameUser { get; set; }
-        public string UserPassword { get; set; }
+        public Guid UserId { get; set; }
+        [Timestamp]
         public DateTime DateRegister { get; set; }
         public string Note { get; set; }
+        public Users User { get; set; }
     }
 }

@@ -3,10 +3,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarAssistance.Data
 {
-    public class DataContext:DbContext
+    public class DataContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-            optionsBuilder.UseNpgsql("Host");
+        /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
+             optionsBuilder.UseNpgsql("Host");*/
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Users>(entity =>
+            {
+                entity.HasIndex(e => e.LogIn).IsUnique();
+                entity.HasIndex(e => e.Email).IsUnique();
+                entity.HasIndex(e => e.Phone).IsUnique();
+            });
+        }
 
         public DbSet<BodyType> BodyTypes;
         public DbSet<Car> Cars;
@@ -19,5 +28,7 @@ namespace CarAssistance.Data
         public DbSet<Model> Models;
         public DbSet<Tires> Tires;
         public DbSet<VehicleDrive> VehicleDrives;
+        public DbSet<Users> Users;
+        public DbSet<Oil> Oils;
     }
 }

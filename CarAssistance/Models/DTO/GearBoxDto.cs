@@ -1,11 +1,13 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace CarAssistance.Models
+namespace CarAssistance.Models.DTO
 {
-    public class GearBox
+    public class GearBoxDto
     {
-        public int GearBoxId { get; set; }
         [Required]
         public string GearBoxType { get; set; }
         [Required]

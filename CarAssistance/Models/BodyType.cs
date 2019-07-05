@@ -1,6 +1,4 @@
-﻿
-
-namespace CarAssistance.Models
+﻿namespace CarAssistance.Models
 {
     public class BodyType
     {

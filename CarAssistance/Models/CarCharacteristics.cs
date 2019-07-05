@@ -5,7 +5,7 @@ namespace CarAssistance.Models
     {
         public int CarCharacteristicsId { get; set; }
         public int MileageRegister { get; set; }
-        public string OilInfo { get; set; }
+        public Oil Oil { get; set; }
         public int MileageNow { get; set; }
     }
 }
