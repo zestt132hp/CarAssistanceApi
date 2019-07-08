@@ -1,5 +1,6 @@
 ﻿using CarAssistance.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace CarAssistance.Data
 {
@@ -7,6 +8,18 @@ namespace CarAssistance.Data
     {
         /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
              optionsBuilder.UseNpgsql("Host");*/
+
+        private readonly IConfiguration _config;
+        public DataContext(DbContextOptions<DataContext> options, IConfiguration config):base(options)
+        {
+            _config = config;
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder builder)
+        {
+            builder.UseSqlServer(_config["ConnectionString"]);
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Users>(entity =>
