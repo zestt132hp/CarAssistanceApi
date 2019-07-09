@@ -1,23 +1,17 @@
 ﻿using CarAssistance.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace CarAssistance.Data
 {
     public class DataContext : DbContext
     {
-        /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-             optionsBuilder.UseNpgsql("Host");*/
-
-        private readonly IConfiguration _config;
-        public DataContext(DbContextOptions<DataContext> options, IConfiguration config):base(options)
+        public DataContext(DbContextOptions<DataContext> options):base(options)
         {
-            _config = config;
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
+        public void Configuring(DbContextOptionsBuilder builder)
         {
-            builder.UseSqlServer(_config["ConnectionString"]);
+            base.OnConfiguring(builder);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
