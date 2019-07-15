@@ -16,19 +16,19 @@ namespace CarAssistance.Models
 
     }
 
-    public abstract class ModelTires
+    public class ModelTires
     {
         public int Id { get; set; }
         public string ModelName { get; set; }
     }
 
-    public abstract class BrandTires
+    public class BrandTires
     {
         public int Id { get; set; }
         public int BrandName { get; set; }
     }
 
-    public abstract class TiresSeason
+    public class TiresSeason
     {
         public int Id { get; set; }
         public string Season { get; set; }

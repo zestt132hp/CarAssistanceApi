@@ -4,8 +4,15 @@ using CarAssistance.Models;
 
 namespace CarAssistance.Data.Repository
 {
-    public class CarRepository:BaseRepository, IRepository<Car>
+    public class CarRepository: IRepository<Car>
     {
+        private readonly NpgSqlDataContext _db;
+        private bool _disposed;
+        public CarRepository(NpgSqlDataContext context)
+        {
+            _db = context;
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -16,18 +23,18 @@ namespace CarAssistance.Data.Repository
         {
             if (disposing)
             {
-                if (!_dispose)
+                if (!_disposed)
                 {
                     _db.Dispose();
                 }
 
-                _dispose = true;
+                _disposed = true;
             }
         }
 
         public Car Get(int id)
         {
-            return Task.Run(async () => await _db.Cars.FindAsync(id)).Result;
+            return Task.Run(async () => await _db.Car.FindAsync(id)).Result;
         }
 
         public void Create(Car item)
@@ -50,8 +57,6 @@ namespace CarAssistance.Data.Repository
             throw new NotImplementedException();
         }
 
-        public CarRepository(DataContext db) : base(db)
-        {
-        }
+       
     }
 }

@@ -19,8 +19,9 @@ namespace CarAssistance
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddEntityFrameworkSqlServer().AddDbContext<Data.DataContext>().BuildServiceProvider();
-            services.AddEntityFrameworkNpgsql().AddDbContext<Data.DataContext>().BuildServiceProvider();
+            services.AddEntityFrameworkNpgsql().AddDbContext<Data.NpgSqlDataContext>().BuildServiceProvider();
+            services.AddSingleton(Configuration);
+            services.AddSpaStaticFiles(config=> config.RootPath = "ClientApp/dist");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

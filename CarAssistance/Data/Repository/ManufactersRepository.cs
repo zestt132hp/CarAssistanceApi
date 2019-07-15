@@ -7,11 +7,11 @@ namespace CarAssistance.Data.Repository
     public class ManufactersRepository:IRepository<Manufacter>
     {
         private bool _dispose;
-        private readonly DataContext _db;
+        private readonly NpgSqlDataContext _data;
 
-        public ManufactersRepository(DataContext context)
+        public ManufactersRepository(NpgSqlDataContext context)
         {
-            _db = context;
+            _data = context;
         }
 
         public void Dispose()
@@ -22,27 +22,27 @@ namespace CarAssistance.Data.Repository
 
         public Manufacter Get(int id)
         {
-            return Task.Run(async () => await _db.Manufacters.FindAsync(id)).Result;
+            return Task.Run(async () => await _data.Manufacter.FindAsync(id)).Result;
         }
 
         public async void Create(Manufacter item)
         {
-            await _db.Manufacters.AddAsync(item);
+            await _data.Manufacter.AddAsync(item);
         }
 
         public void Delete(Manufacter item)
         {
-            _db.Manufacters.Remove(item);
+            _data.Manufacter.Remove(item);
         }
 
         public void DeleteRange(Manufacter[] items)
         {
-            _db.Manufacters.RemoveRange(items);
+            _data.Manufacter.RemoveRange(items);
         }
 
         public void Update(Manufacter item)
         {
-            _db.Manufacters.Update(item);
+            _data.Manufacter.Update(item);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -51,7 +51,7 @@ namespace CarAssistance.Data.Repository
             {
                 if (!_dispose)
                 {
-                    _db.Dispose();
+                    _data.Dispose();
                 }
                 _dispose = true;
             }

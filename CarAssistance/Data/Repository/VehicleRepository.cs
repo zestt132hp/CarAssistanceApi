@@ -5,12 +5,12 @@ namespace CarAssistance.Data.Repository
 {
     public class VehicleRepository:IRepository<VehicleDrive>
     {
-        private readonly DataContext _db;
+        private readonly NpgSqlDataContext _data;
         private bool _dispose;
 
-        public VehicleRepository(DataContext db)
+        public VehicleRepository(NpgSqlDataContext data)
         {
-            _db = db;
+            _data = data;
         }
 
         public void Dispose()

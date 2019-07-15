@@ -4,10 +4,13 @@ using CarAssistance.Models;
 
 namespace CarAssistance.Data.Repository
 {
-    public class CarCharacteristicsRepository:BaseRepository, IRepository<CarCharacteristics>
+    public class CarCharacteristicsRepository: IRepository<CarCharacteristics>
     {
-        public CarCharacteristicsRepository(DataContext context):base(context)
+        private readonly NpgSqlDataContext _db;
+        private bool _disposed;
+        public CarCharacteristicsRepository(NpgSqlDataContext db)
         {
+            _db = db;
         }
         public void Dispose()
         {
@@ -44,12 +47,12 @@ namespace CarAssistance.Data.Repository
         {
             if (disposing)
             {
-                if (!_dispose)
+                if (!_disposed)
                 {
                     _db.Dispose();
                 }
 
-                _dispose = false;
+                _disposed = false;
             }
         }
     }

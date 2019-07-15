@@ -4,10 +4,13 @@ using CarAssistance.Models;
 
 namespace CarAssistance.Data.Repository
 {
-    public class OilRepository:BaseRepository, IRepository<Oil>
+    public class OilRepository: IRepository<Oil>
     {
-        public OilRepository(DataContext db) : base(db)
+        private NpgSqlDataContext Db;
+        private bool _disposed;
+        public OilRepository(NpgSqlDataContext db)
         {
+            Db = db;
         }
 
         public void Dispose()
@@ -20,17 +23,17 @@ namespace CarAssistance.Data.Repository
         {
             if (disposing)
             {
-                if (!_dispose)
+                if (!_disposed)
                 {
-                    _db.Dispose();
+                    Db.Dispose();
                 }
-                _dispose = true;
+                _disposed = true;
             }
         }
 
         public Oil Get(int id)
         {
-            return Task.Run(async ()=> await _db.Oils.FindAsync(id)).Result;
+            return Task.Run(async ()=> await Db.Oil.FindAsync(id)).Result;
         }
 
         public void Create(Oil item)

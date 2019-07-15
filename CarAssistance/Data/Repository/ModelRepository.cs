@@ -9,14 +9,14 @@ namespace CarAssistance.Data.Repository
     public class ModelRepository:IRepository<Model>
     {
         private bool _dispose;
-        private readonly DataContext _db;
+        private readonly NpgSqlDataContext _data;
 
         public ModelRepository(IConfiguration configuration)
         {
-            DbContextOptionsBuilder builder = new DbContextOptionsBuilder();
+            /*DbContextOptionsBuilder builder = new DbContextOptionsBuilder();
             builder.UseSqlServer(configuration["ConnectionString:SqlConnection"]);
-            _db = new DataContext(new DbContextOptions<DataContext>());
-            _db.Configuring(builder);
+            _data = new DataContext(new DbContextOptions<DataContext>());
+            _data.Configuring(builder);*/
         }
 
         public void Dispose()
@@ -27,27 +27,27 @@ namespace CarAssistance.Data.Repository
 
         public Model Get(int id)
         {
-            return Task.Run(async () =>await _db.Models.FindAsync(id)).Result;
+            return Task.Run(async () =>await _data.Models.FindAsync(id)).Result;
         }
 
         public async void Create(Model item)
         {
-            await _db.Models.AddAsync(item);
+            await _data.Models.AddAsync(item);
         }
 
         public void Delete(Model item)
         {
-            _db.Models.Remove(item);
+            _data.Models.Remove(item);
         }
 
         public void DeleteRange(Model[] items)
         {
-            _db.Models.RemoveRange(items);
+            _data.Models.RemoveRange(items);
         }
 
         public void Update(Model item)
         {
-            _db.Models.Update(item);
+            _data.Models.Update(item);
         }
 
         private void Dispose(bool dispose)
@@ -56,7 +56,7 @@ namespace CarAssistance.Data.Repository
             {
                 if (!_dispose)
                 {
-                    _db.Dispose();
+                    _data.Dispose();
                 }
                 _dispose = true;
             }
