@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarAssistance.Data;
 using CarAssistance.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace CarAssistance.Controllers
 {
@@ -14,26 +13,27 @@ namespace CarAssistance.Controllers
     [ApiController]
     public class GearBoxesController : ControllerBase
     {
-        private readonly NpgSqlDataContext _context;
+        private readonly UnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public GearBoxesController(NpgSqlDataContext context)
+        public GearBoxesController(IConfiguration config, IMapper mapper)
         {
-            _context = context;
+            _unitOfWork = new UnitOfWork(config);
+            _mapper = mapper;
         }
 
         // GET: api/GearBoxes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GearBox>>> GetGearBox()
+        public IEnumerable<GearBox> GetGearBox()
         {
-            return await _context.GearBox.ToListAsync();
+            return _unitOfWork.GearsRepos.Get();
         }
 
         // GET: api/GearBoxes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<GearBox>> GetGearBox(int id)
         {
-            var gearBox = await _context.GearBox.FindAsync(id);
-
+            var gearBox = await _unitOfWork.GearsRepos.GetById(id);
             if (gearBox == null)
             {
                 return NotFound();
@@ -50,12 +50,11 @@ namespace CarAssistance.Controllers
             {
                 return BadRequest();
             }
-
-            _context.Entry(gearBox).State = EntityState.Modified;
+            await Task.Run(()=>_unitOfWork.GearsRepos.Update(gearBox));
 
             try
             {
-                await _context.SaveChangesAsync();
+                await Task.Run(()=>_unitOfWork.Save());
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -76,8 +75,9 @@ namespace CarAssistance.Controllers
         [HttpPost]
         public async Task<ActionResult<GearBox>> PostGearBox(GearBox gearBox)
         {
-            _context.GearBox.Add(gearBox);
-            await _context.SaveChangesAsync();
+            await Task.Run(() => _unitOfWork.GearsRepos.Insert(gearBox));
+
+            _unitOfWork.Save();
 
             return CreatedAtAction("GetGearBox", new { id = gearBox.GearBoxId }, gearBox);
         }
@@ -86,21 +86,21 @@ namespace CarAssistance.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<GearBox>> DeleteGearBox(int id)
         {
-            var gearBox = await _context.GearBox.FindAsync(id);
+            var gearBox = await _unitOfWork.GearsRepos.GetById(id);
             if (gearBox == null)
             {
                 return NotFound();
             }
 
-            _context.GearBox.Remove(gearBox);
-            await _context.SaveChangesAsync();
+            _unitOfWork.GearsRepos.Delete(gearBox);
+            await Task.Run(()=>_unitOfWork.Save());
 
             return gearBox;
         }
 
         private bool GearBoxExists(int id)
         {
-            return _context.GearBox.Any(e => e.GearBoxId == id);
+            return _unitOfWork.GearsRepos.GetById(id) != null;
         }
     }
 }

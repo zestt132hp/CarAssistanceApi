@@ -1,4 +1,4 @@
-﻿
+﻿    
 namespace CarAssistance.Models
 {
     public class Car

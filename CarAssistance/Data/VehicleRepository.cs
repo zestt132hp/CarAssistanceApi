@@ -1,39 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CarAssistance.Models.DTO;
+using CarAssistance.Models;
 
 namespace CarAssistance.Data.Repository
 {
-    public class UsersRepository:IRepository<UserDto>
+    public class VehicleRepository:IRepository<VehicleDrive>
     {
+        private readonly NpgSqlDataContext _data;
+        private bool _dispose;
+
+        public VehicleRepository(NpgSqlDataContext data)
+        {
+            _data = data;
+        }
+
         public void Dispose()
         {
             throw new NotImplementedException();
         }
 
-        public UserDto Get(int id)
+        public VehicleDrive Get(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Create(UserDto item)
+        public void Create(VehicleDrive item)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(UserDto item)
+        public void Delete(VehicleDrive item)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteRange(UserDto[] items)
+        public void DeleteRange(VehicleDrive[] items)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(UserDto item)
+        public void Update(VehicleDrive item)
         {
             throw new NotImplementedException();
         }

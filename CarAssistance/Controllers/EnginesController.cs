@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarAssistance.Data;
 using CarAssistance.Models;
+using CarAssistance.Models.DTO;
+using Microsoft.Extensions.Configuration;
 
 namespace CarAssistance.Controllers
 {
@@ -14,48 +14,53 @@ namespace CarAssistance.Controllers
     [ApiController]
     public class EnginesController : ControllerBase
     {
-        private readonly NpgSqlDataContext _context;
-
-        public EnginesController(NpgSqlDataContext context)
+        private readonly UnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        public EnginesController(IConfiguration config, IMapper mapper)
         {
-            _context = context;
+            _mapper = mapper;
+            _unitOfWork = new UnitOfWork(config);
         }
 
         // GET: api/Engines
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Engine>>> GetEngine()
+        public ActionResult<IEnumerable<EngineDto>> GetEngine()
         {
-            return await _context.Engine.ToListAsync();
+            var engines =
+                _mapper.Map<IEnumerable<EngineDto>>(_unitOfWork.EnginesRepos.Get(null, null, nameof(Engine.Fuel)));
+            return new ActionResult<IEnumerable<EngineDto>>(engines);
         }
 
         // GET: api/Engines/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Engine>> GetEngine(int id)
+        public async Task<ActionResult<EngineDto>> GetEngine(int id)
         {
-            var engine = await _context.Engine.FindAsync(id);
-
+            var engine = await _unitOfWork.EnginesRepos.GetById(id, nameof(Engine.Fuel));
             if (engine == null)
             {
                 return NotFound();
             }
 
-            return engine;
+            var engineDto = _mapper.Map<EngineDto>(engine);
+            return engineDto;
         }
 
         // PUT: api/Engines/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEngine(int id, Engine engine)
+        public async Task<IActionResult> PutEngine(int id, EngineDto engine)
         {
-            if (id != engine.EngineId)
+            var engineUnit = await _unitOfWork.EnginesRepos.GetById(id);
+            if (engineUnit == null)
             {
                 return BadRequest();
             }
 
-            _context.Entry(engine).State = EntityState.Modified;
+            engineUnit = _mapper.Map<Engine>(engine);
+            _unitOfWork.EnginesRepos.Update(engineUnit);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await Task.Run(()=> _unitOfWork.Save());
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -74,33 +79,35 @@ namespace CarAssistance.Controllers
 
         // POST: api/Engines
         [HttpPost]
-        public async Task<ActionResult<Engine>> PostEngine(Engine engine)
+        public async Task<ActionResult<EngineDto>> PostEngine(EngineDto engine)
         {
-            _context.Engine.Add(engine);
-            await _context.SaveChangesAsync();
+            var unit = _mapper.Map<Engine>(engine);
+            _unitOfWork.EnginesRepos.Insert(unit);
+            await Task.Run(()=>_unitOfWork.Save());
 
-            return CreatedAtAction("GetEngine", new { id = engine.EngineId }, engine);
+            return CreatedAtAction("GetEngine", new { id = unit.EngineId }, engine);
         }
 
         // DELETE: api/Engines/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Engine>> DeleteEngine(int id)
+        public async Task<ActionResult<EngineDto>> DeleteEngine(int id)
         {
-            var engine = await _context.Engine.FindAsync(id);
+            var engine = await _unitOfWork.EnginesRepos.GetById(id);
             if (engine == null)
             {
                 return NotFound();
             }
 
-            _context.Engine.Remove(engine);
-            await _context.SaveChangesAsync();
+            _unitOfWork.EnginesRepos.Delete(engine);
+            await Task.Run(()=>_unitOfWork.Save());
+            var result = _mapper.Map<EngineDto>(engine);
 
-            return engine;
+            return result;
         }
 
         private bool EngineExists(int id)
         {
-            return _context.Engine.Any(e => e.EngineId == id);
+            return _unitOfWork.EnginesRepos.GetById(id) != null;
         }
     }
 }

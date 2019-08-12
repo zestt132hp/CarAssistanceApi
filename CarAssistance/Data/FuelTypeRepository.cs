@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 
-namespace CarAssistance.Data
+namespace CarAssistance.Data.Repository
 {
-    public class Mappers
+    public class FuelTypeRepository
     {
-        private AutoMapper.Mapper mapper;
     }
 }

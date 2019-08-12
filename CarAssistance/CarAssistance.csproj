@@ -5,11 +5,34 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Repository\**" />
+    <Content Remove="Data\Repository\**" />
+    <EmbeddedResource Remove="Data\Repository\**" />
+    <None Remove="Data\Repository\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\BodyTypeRepository.cs" />
+    <Compile Remove="Data\CarCharacteristicsRepository.cs" />
+    <Compile Remove="Data\CarRepository.cs" />
+    <Compile Remove="Data\EngineRepository.cs" />
+    <Compile Remove="Data\FuelTypeRepository.cs" />
+    <Compile Remove="Data\GarageRepository.cs" />
+    <Compile Remove="Data\ManufactersRepository.cs" />
+    <Compile Remove="Data\ModelRepository.cs" />
+    <Compile Remove="Data\OilRepository.cs" />
+    <Compile Remove="Data\TiresRepository.cs" />
+    <Compile Remove="Data\UsersRepository.cs" />
+    <Compile Remove="Data\VehicleRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />

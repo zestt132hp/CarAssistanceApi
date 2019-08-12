@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AutoMapper;
+using CarAssistance.Data;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -19,9 +21,13 @@ namespace CarAssistance
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddEntityFrameworkNpgsql().AddDbContext<Data.NpgSqlDataContext>().BuildServiceProvider();
+            services.AddEntityFrameworkNpgsql().AddDbContext<NpgSqlDataContext>().BuildServiceProvider();
             services.AddSingleton(Configuration);
-            services.AddSpaStaticFiles(config=> config.RootPath = "ClientApp/dist");
+            services.AddSpaStaticFiles(config => config.RootPath = "ClientApp/dist");
+            var mappingConfig = new MapperConfiguration(conf => { conf.AddProfile(new MappingProfile()); });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
