@@ -10,7 +10,7 @@ namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ModelsController : ControllerBase
+    public class ModelsController : ControllerBases
     {
         private readonly NpgSqlDataContext _context;
 
@@ -44,7 +44,7 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutModel(int id, Model model)
         {
-            if (id != model.ModelId)
+            if (id != model?.ModelId)
             {
                 return BadRequest();
             }
@@ -77,7 +77,7 @@ namespace CarAssistance.Controllers
             _context.Models.Add(model);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetModel", new { id = model.ModelId }, model);
+            return CreatedAtAction("GetModel", new { id = model?.ModelId }, model);
         }
 
         // DELETE: api/Models/5

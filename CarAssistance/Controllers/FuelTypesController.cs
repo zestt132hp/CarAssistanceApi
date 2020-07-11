@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -6,25 +7,26 @@ using Microsoft.EntityFrameworkCore;
 using CarAssistance.Data;
 using CarAssistance.Models;
 using Microsoft.Extensions.Configuration;
+using CarAssistance.Data.Repository;
 
 namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FuelTypesController : ControllerBase
+    public class FuelTypesController : ControllerBases
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public FuelTypesController(IConfiguration config)
+        public FuelTypesController(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = new UnitOfWork(config);
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/FuelTypes
         [HttpGet]
         public ActionResult<IEnumerable<FuelType>> GetFuelType()
         {
-            var fuelDto = _unitOfWork.FuelTypeRepos.Get();
+            var fuelDto = _unitOfWork.FuelTypeRepository.GetByExpression();
             return fuelDto.ToList();
         }
 
@@ -32,7 +34,7 @@ namespace CarAssistance.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<FuelType>> GetFuelType(int id)
         {
-            var fuelType = await _unitOfWork.FuelTypeRepos.GetById(id);
+            var fuelType = _unitOfWork.FuelTypeRepository.GetById(id);
 
             if (fuelType == null)
             {
@@ -46,14 +48,18 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFuelType(int id, FuelType fuelType)
         {
+            if (fuelType == null)
+            {
+                throw new NullReferenceException(nameof(fuelType));
+            }
             if (id != fuelType.FuelTypeId)
             {
                 return BadRequest();
             }
-            _unitOfWork.FuelTypeRepos.Update(fuelType);
+            _unitOfWork.FuelTypeRepository.Update(fuelType);
             try
             {
-                await Task.Run(() => _unitOfWork.Save());
+                _unitOfWork.Commit();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -74,32 +80,32 @@ namespace CarAssistance.Controllers
         [HttpPost]
         public async Task<ActionResult<FuelType>> PostFuelType(FuelType fuelType)
         {
-            _unitOfWork.FuelTypeRepos.Insert(fuelType);
+            _unitOfWork.FuelTypeRepository.Add(fuelType);
             
-            await Task.Run(()=> _unitOfWork.Save());
+            _unitOfWork.Commit();
 
-            return CreatedAtAction("GetFuelType", new { id = fuelType.FuelTypeId }, fuelType);
+            return CreatedAtAction("GetFuelType", new { id = fuelType?.FuelTypeId }, fuelType);
         }
 
         // DELETE: api/FuelTypes/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<FuelType>> DeleteFuelType(int id)
         {
-            var fuelType = await _unitOfWork.FuelTypeRepos.GetById(id);
+            var fuelType = _unitOfWork.FuelTypeRepository.GetById(id);
             if (fuelType == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.FuelTypeRepos.Delete(fuelType);
-            await Task.Run(()=>_unitOfWork.Save());
+            _unitOfWork.FuelTypeRepository.Remove(fuelType);
+            _unitOfWork.Commit();
 
             return fuelType;
         }
 
         private bool FuelTypeExists(int id)
         {
-            return _unitOfWork.FuelTypeRepos.GetById(id) != null;
+            return _unitOfWork.FuelTypeRepository.GetById(id) != null;
         }
     }
 }

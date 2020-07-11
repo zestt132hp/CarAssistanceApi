@@ -8,26 +8,27 @@ using CarAssistance.Data;
 using CarAssistance.Models;
 using CarAssistance.Models.DTO;
 using Microsoft.Extensions.Configuration;
+using CarAssistance.Data.Repository;
 
 namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GaragesController : ControllerBase
+    public class GaragesController : ControllerBases
     {
         private readonly IMapper _mapper;
-        private readonly UnitOfWork _unitOfWork;
-        public GaragesController(IConfiguration config, IMapper mapper)
+        private readonly IUnitOfWork _unitOfWork;
+        public GaragesController(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
-            _unitOfWork = new UnitOfWork(config);
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/Garages
         [HttpGet]
         public IEnumerable<GarageDto> GetGarage()
         {
-            var allGarages = _unitOfWork.GarageRepos.Get(null, null,
+            var allGarages = _unitOfWork.GarageRepos.GetByExpression(null, null,
                 new[] {nameof(Garage.Car), nameof(Garage.User)}.Aggregate(
                     (x, y) => $"{x}, {y}"));
             var garagesDto = _mapper.Map<IEnumerable<GarageDto>>(allGarages);
@@ -38,7 +39,7 @@ namespace CarAssistance.Controllers
         [HttpGet("{id}")]
         public ActionResult<GarageDto> GetGarage(int id)
         {
-            var garage = _unitOfWork.GarageRepos.GetById(id, nameof(Garage.Car), nameof(Garage.User));
+            var garage = _unitOfWork.GarageRepos.GetById(id);
         if (garage == null)
             {
                 return NotFound();
@@ -51,7 +52,7 @@ namespace CarAssistance.Controllers
         public async Task<IActionResult> PutGarage(int id, GarageDto garage)
         {
             var garageObj = _mapper.Map<Garage>(garage);
-            var garageDb = await _unitOfWork.GarageRepos.GetById(id);
+            var garageDb = await _unitOfWork.GarageRepos.GetByIdAsync(id).ConfigureAwait(false);
             if (garageDb == null)
             {
                 return BadRequest();
@@ -62,7 +63,7 @@ namespace CarAssistance.Controllers
             _unitOfWork.GarageRepos.Update(garageDb);
             try
             {
-                _unitOfWork.Save();
+                await _unitOfWork.CommitAsync().ConfigureAwait(false);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -84,8 +85,8 @@ namespace CarAssistance.Controllers
         public async Task<ActionResult<GarageDto>> PostGarage(GarageDto garage)
         {
             var dto = _mapper.Map<Garage>(garage);
-            await Task.Run(()=>_unitOfWork.GarageRepos.Insert(dto));
-            _unitOfWork.Save();
+            await Task.Run(()=>_unitOfWork.GarageRepos.AddAsync(dto)).ConfigureAwait(false);
+            await _unitOfWork.CommitAsync().ConfigureAwait(false);
 
             return CreatedAtAction("GetGarage", new { id = dto.GarageId }, garage);
         }
@@ -94,13 +95,13 @@ namespace CarAssistance.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Garage>> DeleteGarage(int id)
         {
-            var garage = await _unitOfWork.GarageRepos.GetById(id);
+            var garage = await _unitOfWork.GarageRepos.GetByIdAsync(id).ConfigureAwait(false);
             if (garage == null)
             {
                 return NotFound();
             }
-            _unitOfWork.GarageRepos.Delete(id);
-            _unitOfWork.Save();
+            await _unitOfWork.GarageRepos.RemoveAsync(garage).ConfigureAwait(false);
+            await _unitOfWork.CommitAsync().ConfigureAwait(false);
 
             return garage;
         }

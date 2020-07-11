@@ -10,7 +10,7 @@ namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OilsController : ControllerBase
+    public class OilsController : ControllerBases
     {
         private readonly NpgSqlDataContext _context;
 
@@ -44,7 +44,7 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOil(int id, Oil oil)
         {
-            if (id != oil.OilId)
+            if (id != oil?.OilId)
             {
                 return BadRequest();
             }
@@ -77,7 +77,7 @@ namespace CarAssistance.Controllers
             _context.Oil.Add(oil);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOil", new { id = oil.OilId }, oil);
+            return CreatedAtAction("GetOil", new { id = oil?.OilId }, oil);
         }
 
         // DELETE: api/Oils/5

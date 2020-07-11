@@ -8,6 +8,6 @@ namespace CarAssistance.Models.DTO
         [Required]
         public string BodyTypeName { get; set; }
         [Required]
-        public string CountDoors { get; set; }
+        public int CountDoors { get; set; }
     }
 }

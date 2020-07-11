@@ -10,7 +10,7 @@ namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ManufactersController : ControllerBase
+    public class ManufactersController : ControllerBases
     {
         private readonly NpgSqlDataContext _context;
 
@@ -44,7 +44,7 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutManufacter(int id, Manufacter manufacter)
         {
-            if (id != manufacter.ManufacterId)
+            if (id != manufacter?.ManufacterId)
             {
                 return BadRequest();
             }
@@ -77,7 +77,7 @@ namespace CarAssistance.Controllers
             _context.Manufacter.Add(manufacter);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetManufacter", new { id = manufacter.ManufacterId }, manufacter);
+            return CreatedAtAction("GetManufacter", new { id = manufacter?.ManufacterId }, manufacter);
         }
 
         // DELETE: api/Manufacters/5

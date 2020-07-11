@@ -1,39 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CarAssistance.Data;
 using CarAssistance.Models;
-using Microsoft.Extensions.Configuration;
+using CarAssistance.Data.Repository;
+using System;
 
 namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GearBoxesController : ControllerBase
+    public class GearBoxesController : ControllerBases
     {
-        private readonly UnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GearBoxesController(IConfiguration config, IMapper mapper)
+        public GearBoxesController(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = new UnitOfWork(config);
-            _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/GearBoxes
         [HttpGet]
         public IEnumerable<GearBox> GetGearBox()
         {
-            return _unitOfWork.GearsRepos.Get();
+            return _unitOfWork.GearBoxRepo.GetByExpression();
         }
 
         // GET: api/GearBoxes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<GearBox>> GetGearBox(int id)
         {
-            var gearBox = await _unitOfWork.GearsRepos.GetById(id);
+            var gearBox = await _unitOfWork.GearBoxRepo.GetByIdAsync(id).ConfigureAwait(false);
             if (gearBox == null)
             {
                 return NotFound();
@@ -44,17 +41,17 @@ namespace CarAssistance.Controllers
 
         // PUT: api/GearBoxes/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGearBox(int id, GearBox gearBox)
+        public async Task<IActionResult> PutGearBox(int id, [FromBody] GearBox gearBox)
         {
-            if (id != gearBox.GearBoxId)
+            if (id != gearBox?.GearBoxId)
             {
                 return BadRequest();
             }
-            await Task.Run(()=>_unitOfWork.GearsRepos.Update(gearBox));
+            await _unitOfWork.GearBoxRepo.UpdateAsync(gearBox).ConfigureAwait(false);
 
             try
             {
-                await Task.Run(()=>_unitOfWork.Save());
+                _unitOfWork.Commit();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -73,34 +70,42 @@ namespace CarAssistance.Controllers
 
         // POST: api/GearBoxes
         [HttpPost]
-        public async Task<ActionResult<GearBox>> PostGearBox(GearBox gearBox)
+        public async Task<ActionResult<GearBox>> PostGearBox([FromBody] GearBox gearBox)
         {
-            await Task.Run(() => _unitOfWork.GearsRepos.Insert(gearBox));
+            try
+            {
+                await _unitOfWork.GearBoxRepo.AddAsync(gearBox).ConfigureAwait(false);
 
-            _unitOfWork.Save();
+                _unitOfWork.Commit();
 
-            return CreatedAtAction("GetGearBox", new { id = gearBox.GearBoxId }, gearBox);
+                return Ok();
+            }
+
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
         }
 
         // DELETE: api/GearBoxes/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<GearBox>> DeleteGearBox(int id)
         {
-            var gearBox = await _unitOfWork.GearsRepos.GetById(id);
+            var gearBox = await _unitOfWork.GearBoxRepo.GetByIdAsync(id).ConfigureAwait(false);
             if (gearBox == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.GearsRepos.Delete(gearBox);
-            await Task.Run(()=>_unitOfWork.Save());
+            await _unitOfWork.GearBoxRepo.RemoveAsync(gearBox).ConfigureAwait(false);
+            _unitOfWork.Commit();
 
             return gearBox;
         }
 
         private bool GearBoxExists(int id)
         {
-            return _unitOfWork.GearsRepos.GetById(id) != null;
+            return _unitOfWork.GearBoxRepo.GetById(id) != null;
         }
     }
 }

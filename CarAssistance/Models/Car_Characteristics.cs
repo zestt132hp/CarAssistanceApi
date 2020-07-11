@@ -3,9 +3,11 @@ using System;
 
 namespace CarAssistance.Models
 {
-    public class CarCharacteristics
+    public class Car_Characteristics
     {
-        public int CarCharacteristicsId { get; set; }
+        public int Id { get; set; }
+        public int OilInfoId { get; set; }
+
         public int MileageRegister { get; set; }
         public Oil Oil { get; set; }
         public int MileageNow { get; set; }

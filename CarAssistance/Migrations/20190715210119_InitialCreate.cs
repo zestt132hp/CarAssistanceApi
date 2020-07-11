@@ -8,6 +8,10 @@ namespace CarAssistance.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            if (migrationBuilder == null)
+            {
+                throw new NullReferenceException("отсутсвует: " + nameof(MigrationBuilder));
+            }
             migrationBuilder.EnsureSchema(
                 name: "public");
 
@@ -476,6 +480,10 @@ namespace CarAssistance.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            if (migrationBuilder == null)
+            {
+                throw new NullReferenceException(nameof(migrationBuilder));
+            }
             migrationBuilder.DropTable(
                 name: "Car",
                 schema: "public");

@@ -10,7 +10,7 @@ namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TiresController : ControllerBase
+    public class TiresController : ControllerBases
     {
         private readonly NpgSqlDataContext _context;
 
@@ -21,7 +21,7 @@ namespace CarAssistance.Controllers
 
         // GET: api/Tires
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tires>>> GetTires_1()
+        public async Task<ActionResult<IEnumerable<Tires>>> GetTires()
         {
             return await _context.Tires.ToListAsync();
         }
@@ -44,7 +44,7 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTires(int id, Tires tires)
         {
-            if (id != tires.TiresId)
+            if (id != tires?.TiresId)
             {
                 return BadRequest();
             }
@@ -77,7 +77,7 @@ namespace CarAssistance.Controllers
             _context.Tires.Add(tires);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTires", new { id = tires.TiresId }, tires);
+            return CreatedAtAction("GetTires", new { id = tires?.TiresId }, tires);
         }
 
         // DELETE: api/Tires/5

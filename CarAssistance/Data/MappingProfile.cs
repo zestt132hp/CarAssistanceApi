@@ -12,11 +12,12 @@ namespace CarAssistance.Data
             CreateMap<Car, CarDto>();
             CreateMap<GearBox, GearBoxDto>();
             CreateMap<Tires, TiresDto>();
-            CreateMap<CarCharacteristics, CarCharacteristicsDto>();
+            CreateMap<Car_Characteristics, CarCharacteristicsDto>();
             CreateMap<Garage, GarageDto>();
             CreateMap<Oil, OilDto>();
             CreateMap<Users, UserDto>();
             CreateMap<Engine, EngineDto>();
+            CreateMap<BodyTypeDto, BodyType>();
         }
     }
 }

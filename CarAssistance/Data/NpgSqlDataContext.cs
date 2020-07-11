@@ -1,38 +1,31 @@
-﻿using Microsoft.Extensions.Configuration;
-using CarAssistance.Models;
+﻿using CarAssistance.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarAssistance.Data
 {
     public class NpgSqlDataContext : DbContext
     {
-        private readonly IConfiguration _config;
-        public NpgSqlDataContext(DbContextOptions<NpgSqlDataContext> options, IConfiguration configuration):base(options)
+        public NpgSqlDataContext(DbContextOptions<NpgSqlDataContext> options) : base(options)
         {
-            _config = configuration;
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql(_config["ConnectionString:PsqConnection"]);
-        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Users>(entity =>
+            builder?.Entity<Users>(entity =>
             {
                 entity.HasIndex(e => e.LogIn).IsUnique();
                 entity.HasIndex(e => e.Email).IsUnique();
                 entity.HasIndex(e => e.Phone).IsUnique();
             });
-            builder.HasDefaultSchema("public");
+            builder?.HasDefaultSchema("public");
             base.OnModelCreating(builder);
         }
         public DbSet<Manufacter> Manufacter { get; set; }
         public DbSet<BodyType> BodyType { get; set; }
         public DbSet<Users> Users { get; set; }
         public DbSet<Car> Car { get; set; }
-        public DbSet<CarCharacteristics> CarCharacteristics { get; set; }
+        public DbSet<Car_Characteristics> CarCharacteristics { get; set; }
         public DbSet<BrandTires> BrandTires { get; set; }
         public DbSet<Engine> Engine { get; set; }
         public DbSet<VehicleDrive> VehicleDrive { get; set; }

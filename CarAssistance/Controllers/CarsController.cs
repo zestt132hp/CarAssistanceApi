@@ -4,18 +4,17 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CarAssistance.Data;
 using CarAssistance.Models;
 using CarAssistance.Models.DTO;
-using Microsoft.Extensions.Configuration;
+using CarAssistance.Data.Repository;
 
 namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CarsController : ControllerBase
+    public class CarsController : ControllerBases
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         private readonly string[] _includeProperty = new[]
         {
@@ -23,17 +22,17 @@ namespace CarAssistance.Controllers
             nameof(Car.Manufacter), nameof(Car.Model), nameof(Car.Tires)
         };
         private readonly IMapper _mapper;
-        public CarsController(IConfiguration conf, IMapper mapper)
+        public CarsController(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
-            _unitOfWork = new UnitOfWork(conf);
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/Cars
         [HttpGet]
         public IEnumerable<CarDto> GetCar()
         {
-            var cars = _mapper.Map<IEnumerable<CarDto>>(_unitOfWork.CarsRepos.Get(null, null,
+            var cars = _mapper.Map<IEnumerable<CarDto>>(_unitOfWork.CarRepository.GetByExpression(null, null,
                 _includeProperty.Aggregate((x, y)=> $"{x}, {y}")));
             return cars;
         }
@@ -42,7 +41,7 @@ namespace CarAssistance.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CarDto>> GetCar(int id)
         {
-            var car = await _unitOfWork.CarsRepos.GetById(id, includeProperty: _includeProperty);
+            var car = _unitOfWork.CarRepository.GetById(id);
             if (car == null)
             {
                 return NotFound();
@@ -56,18 +55,18 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCar(int id, CarDto car)
         {
-            var tmp = await _unitOfWork.CarsRepos.GetById(id, _includeProperty);
+            var tmp = _unitOfWork.CarRepository.GetById(id);
             if (tmp == null)
             {
                 return BadRequest();
             }
 
             var result = _mapper.Map<Car>(car);
-            _unitOfWork.CarsRepos.Update(result);
+            _unitOfWork.CarRepository.Update(result);
 
             try
             {
-                _unitOfWork.Save();
+                await _unitOfWork.CommitAsync().ConfigureAwait(false);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -91,8 +90,8 @@ namespace CarAssistance.Controllers
             var carUnit = _mapper.Map<Car>(car);
             if (carUnit != null)
 
-             await  Task.Run(()=> _unitOfWork.CarsRepos.Insert(carUnit));
-            _unitOfWork.Save();
+             await  Task.Run(()=> _unitOfWork.CarRepository.Add(carUnit));
+            _unitOfWork.Commit();
 
             return CreatedAtAction("GetCar", new {id = carUnit?.CarId}, car);
         }
@@ -101,21 +100,21 @@ namespace CarAssistance.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Car>> DeleteCar(int id)
         {
-            var car = await _unitOfWork.CarsRepos.GetById(id);
+            var car = _unitOfWork.CarRepository.GetById(id);
             if (car == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.CarsRepos.Delete(car);
-            _unitOfWork.Save();
+            _unitOfWork.CarRepository.Remove(car);
+            _unitOfWork.Commit();
 
             return car;
         }
 
         private bool CarExists(int id)
         {
-            var car = _unitOfWork.CarsRepos.GetById(id);
+            var car = _unitOfWork.CarRepository.GetById(id);
             return car != null;
         }
     }

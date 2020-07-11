@@ -3,23 +3,22 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CarAssistance.Data;
 using CarAssistance.Models;
 using CarAssistance.Models.DTO;
-using Microsoft.Extensions.Configuration;
+using CarAssistance.Data.Repository;
 
 namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EnginesController : ControllerBase
+    public class EnginesController : ControllerBases
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public EnginesController(IConfiguration config, IMapper mapper)
+        public EnginesController(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
-            _unitOfWork = new UnitOfWork(config);
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/Engines
@@ -27,7 +26,7 @@ namespace CarAssistance.Controllers
         public ActionResult<IEnumerable<EngineDto>> GetEngine()
         {
             var engines =
-                _mapper.Map<IEnumerable<EngineDto>>(_unitOfWork.EnginesRepos.Get(null, null, nameof(Engine.Fuel)));
+                _mapper.Map<IEnumerable<EngineDto>>(_unitOfWork.EngineRepository.GetByExpression(null, null, nameof(Engine.Fuel)));
             return new ActionResult<IEnumerable<EngineDto>>(engines);
         }
 
@@ -35,7 +34,7 @@ namespace CarAssistance.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<EngineDto>> GetEngine(int id)
         {
-            var engine = await _unitOfWork.EnginesRepos.GetById(id, nameof(Engine.Fuel));
+            var engine = _unitOfWork.EngineRepository.GetById(id);
             if (engine == null)
             {
                 return NotFound();
@@ -49,18 +48,18 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEngine(int id, EngineDto engine)
         {
-            var engineUnit = await _unitOfWork.EnginesRepos.GetById(id);
+            var engineUnit = _unitOfWork.EngineRepository.GetById(id);
             if (engineUnit == null)
             {
                 return BadRequest();
             }
 
             engineUnit = _mapper.Map<Engine>(engine);
-            _unitOfWork.EnginesRepos.Update(engineUnit);
+            _unitOfWork.EngineRepository.Update(engineUnit);
 
             try
             {
-                await Task.Run(()=> _unitOfWork.Save());
+                _unitOfWork.Commit();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -82,8 +81,8 @@ namespace CarAssistance.Controllers
         public async Task<ActionResult<EngineDto>> PostEngine(EngineDto engine)
         {
             var unit = _mapper.Map<Engine>(engine);
-            _unitOfWork.EnginesRepos.Insert(unit);
-            await Task.Run(()=>_unitOfWork.Save());
+            _unitOfWork.EngineRepository.Add(unit);
+            _unitOfWork.Commit();
 
             return CreatedAtAction("GetEngine", new { id = unit.EngineId }, engine);
         }
@@ -92,14 +91,14 @@ namespace CarAssistance.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<EngineDto>> DeleteEngine(int id)
         {
-            var engine = await _unitOfWork.EnginesRepos.GetById(id);
+            var engine = _unitOfWork.EngineRepository.GetById(id);
             if (engine == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.EnginesRepos.Delete(engine);
-            await Task.Run(()=>_unitOfWork.Save());
+            _unitOfWork.EngineRepository.Remove(engine);
+            _unitOfWork.Commit();
             var result = _mapper.Map<EngineDto>(engine);
 
             return result;
@@ -107,7 +106,7 @@ namespace CarAssistance.Controllers
 
         private bool EngineExists(int id)
         {
-            return _unitOfWork.EnginesRepos.GetById(id) != null;
+            return _unitOfWork.EngineRepository.GetById(id) != null;
         }
     }
 }

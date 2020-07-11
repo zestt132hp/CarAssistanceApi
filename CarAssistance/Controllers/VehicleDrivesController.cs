@@ -12,7 +12,7 @@ namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VehicleDrivesController : ControllerBase
+    public class VehicleDrivesController : ControllerBases
     {
         private readonly NpgSqlDataContext _context;
 
@@ -46,7 +46,7 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVehicleDrive(int id, VehicleDrive vehicleDrive)
         {
-            if (id != vehicleDrive.Id)
+            if (id != vehicleDrive?.Id)
             {
                 return BadRequest();
             }
@@ -79,7 +79,7 @@ namespace CarAssistance.Controllers
             _context.VehicleDrive.Add(vehicleDrive);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetVehicleDrive", new { id = vehicleDrive.Id }, vehicleDrive);
+            return CreatedAtAction("GetVehicleDrive", new { id = vehicleDrive?.Id }, vehicleDrive);
         }
 
         // DELETE: api/VehicleDrives/5

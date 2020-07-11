@@ -10,7 +10,7 @@ namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ModelTiresController : ControllerBase
+    public class ModelTiresController : ControllerBases
     {
         private readonly NpgSqlDataContext _context;
 
@@ -44,7 +44,7 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutModelTires(int id, ModelTires modelTires)
         {
-            if (id != modelTires.Id)
+            if (id != modelTires?.Id)
             {
                 return BadRequest();
             }
@@ -77,7 +77,7 @@ namespace CarAssistance.Controllers
             _context.ModelTires.Add(modelTires);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetModelTires", new { id = modelTires.Id }, modelTires);
+            return CreatedAtAction("GetModelTires", new { id = modelTires?.Id }, modelTires);
         }
 
         // DELETE: api/ModelTires/5

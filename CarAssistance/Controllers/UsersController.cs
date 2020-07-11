@@ -11,7 +11,7 @@ namespace CarAssistance.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : ControllerBases
     {
         private readonly NpgSqlDataContext _context;
 
@@ -22,7 +22,7 @@ namespace CarAssistance.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Users>>> GetUsers_1()
+        public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
         }
@@ -45,7 +45,7 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUsers(Guid id, Users users)
         {
-            if (id != users.UserId)
+            if (id != users?.UserId)
             {
                 return BadRequest();
             }
@@ -78,7 +78,7 @@ namespace CarAssistance.Controllers
             _context.Users.Add(users);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUsers", new { id = users.UserId }, users);
+            return CreatedAtAction("GetUsers", new { id = users?.UserId }, users);
         }
 
         // DELETE: api/Users/5
