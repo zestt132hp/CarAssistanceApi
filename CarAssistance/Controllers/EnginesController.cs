@@ -84,7 +84,7 @@ namespace CarAssistance.Controllers
             _unitOfWork.EngineRepository.Add(unit);
             _unitOfWork.Commit();
 
-            return CreatedAtAction("GetEngine", new { id = unit.EngineId }, engine);
+            return CreatedAtAction("GetEngine", new { id = unit.Id }, engine);
         }
 
         // DELETE: api/Engines/5

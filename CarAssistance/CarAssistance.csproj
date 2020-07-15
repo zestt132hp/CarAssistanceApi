@@ -25,6 +25,12 @@
     <Compile Remove="Data\TiresRepository.cs" />
     <Compile Remove="Data\UsersRepository.cs" />
     <Compile Remove="Data\VehicleRepository.cs" />
+    <Compile Remove="Migrations\20190715210119_InitialCreate.cs" />
+    <Compile Remove="Migrations\20190715210119_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20200712074702_AddProductReviews.cs" />
+    <Compile Remove="Migrations\20200712074702_AddProductReviews.Designer.cs" />
+    <Compile Remove="Migrations\20200712140746_MigrationCarAssistance.cs" />
+    <Compile Remove="Migrations\20200712140746_MigrationCarAssistance.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +43,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.4" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

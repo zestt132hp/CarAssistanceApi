@@ -93,7 +93,7 @@ namespace CarAssistance.Controllers
              await  Task.Run(()=> _unitOfWork.CarRepository.Add(carUnit));
             _unitOfWork.Commit();
 
-            return CreatedAtAction("GetCar", new {id = carUnit?.CarId}, car);
+            return CreatedAtAction("GetCar", new {id = carUnit?.Id}, car);
         }
 
         // DELETE: api/Cars/5

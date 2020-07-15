@@ -21,14 +21,14 @@ namespace CarAssistance.Controllers
 
         // GET: api/Manufacters
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Manufacter>>> GetManufacter()
+        public async Task<ActionResult<IEnumerable<Manufacters>>> GetManufacter()
         {
             return await _context.Manufacter.ToListAsync();
         }
 
         // GET: api/Manufacters/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Manufacter>> GetManufacter(int id)
+        public async Task<ActionResult<Manufacters>> GetManufacter(int id)
         {
             var manufacter = await _context.Manufacter.FindAsync(id);
 
@@ -42,9 +42,9 @@ namespace CarAssistance.Controllers
 
         // PUT: api/Manufacters/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutManufacter(int id, Manufacter manufacter)
+        public async Task<IActionResult> PutManufacter(int id, Manufacters manufacter)
         {
-            if (id != manufacter?.ManufacterId)
+            if (id != manufacter?.Id)
             {
                 return BadRequest();
             }
@@ -72,17 +72,17 @@ namespace CarAssistance.Controllers
 
         // POST: api/Manufacters
         [HttpPost]
-        public async Task<ActionResult<Manufacter>> PostManufacter(Manufacter manufacter)
+        public async Task<ActionResult<Manufacters>> PostManufacter(Manufacters manufacter)
         {
             _context.Manufacter.Add(manufacter);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetManufacter", new { id = manufacter?.ManufacterId }, manufacter);
+            return CreatedAtAction("GetManufacter", new { id = manufacter?.Id }, manufacter);
         }
 
         // DELETE: api/Manufacters/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Manufacter>> DeleteManufacter(int id)
+        public async Task<ActionResult<Manufacters>> DeleteManufacter(int id)
         {
             var manufacter = await _context.Manufacter.FindAsync(id);
             if (manufacter == null)
@@ -98,7 +98,7 @@ namespace CarAssistance.Controllers
 
         private bool ManufacterExists(int id)
         {
-            return _context.Manufacter.Any(e => e.ManufacterId == id);
+            return _context.Manufacter.Any(e => e.Id == id);
         }
     }
 }

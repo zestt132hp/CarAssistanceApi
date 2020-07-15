@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 
 namespace CarAssistance.Data.Repositores
 {
-    public class GearBoxRepository : RepositoryBase<GearBox>, IGearBoxRepo
+    public class GearBoxRepository : RepositoryBase<GearBoxes>, IGearBoxRepo
     {
         public GearBoxRepository(DbContext context) : base(context)
         {
         }
 
-        public void Update(GearBox gearBox)
+        public void Update(GearBoxes gearBox)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task UpdateAsync(GearBox gearBox)
+        public Task UpdateAsync(GearBoxes gearBox)
         {
             throw new System.NotImplementedException();
         }

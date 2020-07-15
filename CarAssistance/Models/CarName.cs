@@ -7,8 +7,8 @@ namespace CarAssistance.Models
 {
     public class CarName
     {
-        public int Manufacters_Id { get; set; }
-        public int Models_Id { get; set; }
+        public int ManufactersId { get; set; }
+        public int ModelsId { get; set; }
         public int Id { get; set; }
     }
 }

@@ -3,7 +3,7 @@ namespace CarAssistance.Models.DTO
 {
     public class CarDto
     {
-        public Manufacter Manufacter { get; set; }
+        public Manufacters Manufacter { get; set; }
         public Model Model { get; set; }
         public EngineDto Engine { get; set; }
         public GearBoxDto GearBox { get; set; }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarAssistance.Data.Repositores
 {
-    public class CarCharacteristicsRepository : RepositoryBase<Car_Characteristics>, ICarCharacteristicsRepo
+    public class CarCharacteristicsRepository : RepositoryBase<CarCharacteristics>, ICarCharacteristicsRepo
     {
         public CarCharacteristicsRepository(DbContext context) : base(context)
         {

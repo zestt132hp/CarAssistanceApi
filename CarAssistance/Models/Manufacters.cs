@@ -1,8 +1,8 @@
 ﻿namespace CarAssistance.Models
 {
-    public class Manufacter
+    public class Manufacters
     {
-        public int ManufacterId { get; set; }
+        public int Id { get; set; }
         public string Brand { get; set; }
     }
 }

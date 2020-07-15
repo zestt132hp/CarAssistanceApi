@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace CarAssistance.Data.IRepos
 {
-    public interface IGearBoxRepo : IRepository<GearBox>
+    public interface IGearBoxRepo : IRepository<GearBoxes>
     {
-        void Update(GearBox gearBox);
-        Task UpdateAsync(GearBox gearBox);
+        void Update(GearBoxes gearBox);
+        Task UpdateAsync(GearBoxes gearBox);
     }
 }

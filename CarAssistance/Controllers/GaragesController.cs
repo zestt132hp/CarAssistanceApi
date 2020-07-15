@@ -29,7 +29,7 @@ namespace CarAssistance.Controllers
         public IEnumerable<GarageDto> GetGarage()
         {
             var allGarages = _unitOfWork.GarageRepos.GetByExpression(null, null,
-                new[] {nameof(Garage.Car), nameof(Garage.User)}.Aggregate(
+                new[] {nameof(Garage.Cars), nameof(Garage.Account)}.Aggregate(
                     (x, y) => $"{x}, {y}"));
             var garagesDto = _mapper.Map<IEnumerable<GarageDto>>(allGarages);
             return garagesDto;
@@ -59,7 +59,7 @@ namespace CarAssistance.Controllers
             }
 
             garageDb = garageObj;
-            garageDb.GarageId = id;
+            garageDb.Id = id;
             _unitOfWork.GarageRepos.Update(garageDb);
             try
             {
@@ -88,7 +88,7 @@ namespace CarAssistance.Controllers
             await Task.Run(()=>_unitOfWork.GarageRepos.AddAsync(dto)).ConfigureAwait(false);
             await _unitOfWork.CommitAsync().ConfigureAwait(false);
 
-            return CreatedAtAction("GetGarage", new { id = dto.GarageId }, garage);
+            return CreatedAtAction("GetGarage", new { id = dto.Id }, garage);
         }
 
         // DELETE: api/Garages/5

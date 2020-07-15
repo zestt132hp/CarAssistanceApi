@@ -7,12 +7,17 @@ namespace CarAssistance.Models
 {
     public class Garage
     {
-        public int GarageId { get; set; }
-        public List<Car> Car { get; set; }
-        public Guid UserId { get; set; }
+        public int Id { get; set; }
+        public int CarId { get; set; }
+        public int AccountId { get; set; }
+        public int UserNotesId { get; set; }
+
         [Timestamp]
         public DateTime DateRegister { get; set; }
-        public string Note { get; set; }
-        public Users User { get; set; }
+
+        public Account Account { get; set; }
+        public IList<Car> Cars { get; set; }
+        public IList<UserNotes> UserNotes { get; set; }
+
     }
 }

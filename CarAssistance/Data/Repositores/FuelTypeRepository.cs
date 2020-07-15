@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarAssistance.Data.Repositores
 {
-    public class FuelTypeRepository : RepositoryBase<FuelType>, IFuelTypeRepo
+    public class FuelTypeRepository : RepositoryBase<Fuel>, IFuelTypeRepo
     {
         public FuelTypeRepository(DbContext context) : base(context)
         {
         }
 
-        public void Update(FuelType fuelType)
+        public void Update(Fuel fuelType)
         {
             throw new System.NotImplementedException();
         }

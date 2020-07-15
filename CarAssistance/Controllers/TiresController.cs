@@ -44,7 +44,7 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTires(int id, Tires tires)
         {
-            if (id != tires?.TiresId)
+            if (id != tires?.Id)
             {
                 return BadRequest();
             }
@@ -77,7 +77,7 @@ namespace CarAssistance.Controllers
             _context.Tires.Add(tires);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTires", new { id = tires?.TiresId }, tires);
+            return CreatedAtAction("GetTires", new { id = tires?.Id }, tires);
         }
 
         // DELETE: api/Tires/5
@@ -98,7 +98,7 @@ namespace CarAssistance.Controllers
 
         private bool TiresExists(int id)
         {
-            return _context.Tires.Any(e => e.TiresId == id);
+            return _context.Tires.Any(e => e.Id == id);
         }
     }
 }
