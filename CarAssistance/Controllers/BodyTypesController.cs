@@ -6,6 +6,7 @@ using CarAssistance.Models;
 using CarAssistance.Models.DTO;
 using AutoMapper;
 using CarAssistance.Data.Repository;
+using Newtonsoft.Json;
 
 namespace CarAssistance.Controllers
 {
@@ -41,15 +42,25 @@ namespace CarAssistance.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<BodyTypeDto>(bodyType);
+            var result = JsonConvert.SerializeObject(bodyType);
+
+            return Ok(result);
         }
 
         // PUT: api/BodyTypes/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBodyType(int id, BodyTypeDto bodyTypeDto)
+        public async Task<IActionResult> PutBodyType(int id, string bodyTypeDto)
         {
-            var bodyType = _mapper.Map<BodyType>(bodyTypeDto);
+            var deserializeObject = JsonConvert.DeserializeObject<BodyTypeDto>(bodyTypeDto);
+
+            if(deserializeObject == null)
+            {
+                return BadRequest();
+            }
+
+            var bodyType = _mapper.Map<BodyType>(deserializeObject);
             bodyType.Id = id;
+
             await _UoW.BodyTypeRepository.UpdateAsync(bodyType).ConfigureAwait(false);
 
             try
@@ -72,17 +83,25 @@ namespace CarAssistance.Controllers
 
         // POST: api/BodyTypes
         [HttpPost]
-        public async Task<ActionResult<BodyTypeDto>> PostBodyType(BodyTypeDto bodyType)
+        public async Task<IActionResult> PostBodyType(string bodyType)
         {
-            var body = _mapper.Map<BodyType>(bodyType);
+            var deserializeResult = JsonConvert.DeserializeObject<BodyTypeDto>(bodyType);
+
+            if(deserializeResult == null)
+            {
+                return BadRequest();
+            }
+
+            var body = _mapper.Map<BodyType>(deserializeResult);
             _UoW.BodyTypeRepository.Add(body);
             await _UoW.CommitAsync().ConfigureAwait(false);
-            return CreatedAtAction("GetBodyType", new { id = body.Id }, bodyType);
+
+            return Ok();
         }
 
         // DELETE: api/BodyTypes/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<BodyType>> DeleteBodyType(int id)
+        public async Task<IActionResult> DeleteBodyType(int id)
         {
             var bodyType = 
                 await Task.Run(() => _UoW.BodyTypeRepository.GetById(id)).ConfigureAwait(false);
@@ -92,7 +111,7 @@ namespace CarAssistance.Controllers
             }
             _UoW.BodyTypeRepository.Remove(bodyType);
             await _UoW.CommitAsync().ConfigureAwait(false);
-            return bodyType;
+            return Ok();
         }
 
         private bool BodyTypeExists(int id)
