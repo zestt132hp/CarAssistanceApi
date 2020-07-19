@@ -4,8 +4,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarAssistance.Models;
-using CarAssistance.Models.DTO;
 using CarAssistance.Data.Repository;
+using Shared.Contracts.DtoModels;
 
 namespace CarAssistance.Controllers
 {

@@ -1,7 +1,6 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace CarAssistance.Models.DTO
+namespace Shared.Contracts.DtoModels
 {
     public class BodyTypeDto
     {

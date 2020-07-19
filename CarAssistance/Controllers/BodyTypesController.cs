@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarAssistance.Models;
-using CarAssistance.Models.DTO;
 using AutoMapper;
 using CarAssistance.Data.Repository;
 using Newtonsoft.Json;
+using Shared.Contracts.DtoModels;
 
 namespace CarAssistance.Controllers
 {

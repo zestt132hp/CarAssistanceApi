@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CarAssistance.Models;
-using CarAssistance.Models.DTO;
+using Shared.Contracts.DtoModels;
 
 namespace CarAssistance.Data
 {
