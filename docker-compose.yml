@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  carassistance:
+    image: ${DOCKER_REGISTRY-}carassistance
+    build:
+      context: .
+      dockerfile: CarAssistance\Dockerfile
