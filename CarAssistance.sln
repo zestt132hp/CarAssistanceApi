@@ -14,7 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{36252875
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExportDataFromExcel", "ExportDataFromExcel\ExportDataFromExcel.csproj", "{FE31CCA0-D2B7-4CCF-BA9E-71B731C9A614}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Contracts", "Shared.Contracts\Shared.Contracts.csproj", "{3D9BA026-F17C-43FD-9501-26EED74327E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Contracts", "Shared.Contracts\Shared.Contracts.csproj", "{3D9BA026-F17C-43FD-9501-26EED74327E4}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{444692E6-8941-4709-AE29-11EE45EB74C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +36,10 @@ Global
 		{3D9BA026-F17C-43FD-9501-26EED74327E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D9BA026-F17C-43FD-9501-26EED74327E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D9BA026-F17C-43FD-9501-26EED74327E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{444692E6-8941-4709-AE29-11EE45EB74C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{444692E6-8941-4709-AE29-11EE45EB74C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{444692E6-8941-4709-AE29-11EE45EB74C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{444692E6-8941-4709-AE29-11EE45EB74C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

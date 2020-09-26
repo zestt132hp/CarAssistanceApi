@@ -4,7 +4,7 @@
     <!--<GenerateDocumentationFile>true</GenerateDocumentationFile>-->
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>9d3ba59e-ecb5-4c59-826c-a2baf6b40f70</UserSecretsId>
-    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
