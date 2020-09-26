@@ -7,7 +7,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src
-COPY "docker-compose.yml" "lsdocker-compose.yml"
+COPY "docker-compose.dcproj" "lsdocker-compose.dcproj"
 COPY "CarAssistance.sln" "CarAssistance.sln"
 COPY "Shared.Contracts/Shared.Contracts.csproj" "Shared.Contracts/Shared.Contracts.csproj"
 COPY "CarAssistance/CarAssistance.csproj" "CarAssistance/CarAssistance.csproj"
