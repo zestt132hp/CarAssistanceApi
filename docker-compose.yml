@@ -23,6 +23,8 @@ services:
            - POSTGRES_DB=CarAssistance
            - POSTGRES_USER=admin
            - POSTGRES_PASSWORD=qwe123
+        volumes: 
+           - /SQLScripts/BackUp.sql:/var/lib/postgresql
         networks:
         - app-network
 
