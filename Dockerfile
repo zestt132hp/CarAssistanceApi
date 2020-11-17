@@ -7,19 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src
-COPY "CarAssistance.sln" "CarAssistance.sln"
-
-COPY "Shared.Contracts/Shared.Contracts.csproj" "Shared.Contracts/Shared.Contracts.csproj"
-COPY "CarAssistance/CarAssistance.csproj" "CarAssistance/CarAssistance.csproj"
-COPY "ExportDataFromExcel/ExportDataFromExcel.csproj" "ExportDataFromExcel/ExportDataFromExcel.csproj"
-
-RUN dotnet restore "CarAssistance.sln"
 
 COPY . .
-WORKDIR /src/CarAssistance
-RUN dotnet publish --no-restore -c Release -o /app
+WORKDIR "/src/CarAssistance"
+RUN dotnet restore
+RUN dotnet build -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app .
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "CarAssistance.dll"]
