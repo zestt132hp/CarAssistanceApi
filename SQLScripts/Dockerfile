@@ -1,11 +1,11 @@
 FROM library/postgres
-ENV POSTGRES_DB=CarAssistance
+ENV POSTGRES_DB=CarAssistanceDb
 ENV POSTGRES_USER=admin
 ENV POSTGRES_PASSWORD=qwe123
-ADD ./SQLScripts/init.sql /docker-entrypoint-initdb.d/
 COPY ./SQLScripts/BackUp.sql /var/lib/postgresql/
 COPY ./SQLScripts/init.sql /var/lib/postgresql/
 COPY ./SQLScripts/Backup.backup /var/lib/postgresql/
+ADD ./SQLScripts/init.sql /docker-entrypoint-initdb.d/
 ENTRYPOINT ["docker-entrypoint.sh"]
 EXPOSE 5432
 CMD ["postgres"]
