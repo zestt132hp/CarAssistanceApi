@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using CarAssistance.Models;
 using CarAssistance.Data.Repository;
 using Shared.Contracts.DtoModels;
+using CarAssistance.Data.IRepos;
+using System;
+using Newtonsoft.Json;
 
 namespace CarAssistance.Controllers
 {
@@ -15,7 +18,9 @@ namespace CarAssistance.Controllers
     public class CarsController : ControllerBases
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICarRepo _repository;
 
+        [Obsolete]
         private readonly string[] _includeProperty = new[]
         {
             nameof(Car.BodyType), nameof(Car.Characteristics), nameof(Car.Engine), nameof(Car.GearBox),
@@ -26,22 +31,35 @@ namespace CarAssistance.Controllers
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+
+            if (unitOfWork == null) 
+            {
+                throw new NullReferenceException(nameof(unitOfWork));
+            }
+            _repository = unitOfWork.CarRepository;
         }
 
         // GET: api/Cars
         [HttpGet]
-        public IEnumerable<CarDto> GetCar()
+        public async Task<ActionResult<IEnumerable<CarDto>>> GetCar()
         {
-            var cars = _mapper.Map<IEnumerable<CarDto>>(_unitOfWork.CarRepository.GetByExpression(null, null,
-                _includeProperty.Aggregate((x, y)=> $"{x}, {y}")));
-            return cars;
+            var cars = await _repository.GetAllAsync().ConfigureAwait(false);
+
+            if (cars == null) 
+            {
+                return BadRequest();
+            }
+
+            var result = _mapper.Map<CarDto[]>(cars);
+
+            return result;
         }
 
         // GET: api/Cars/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CarDto>> GetCar(int id)
         {
-            var car = _unitOfWork.CarRepository.GetById(id);
+            var car = await _repository.GetByIdAsync(id).ConfigureAwait(false);
             if (car == null)
             {
                 return NotFound();
@@ -53,16 +71,17 @@ namespace CarAssistance.Controllers
 
         // PUT: api/Cars/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCar(int id, CarDto car)
+        public async Task<IActionResult> PutCar(int id, string carDto)
         {
-            var tmp = _unitOfWork.CarRepository.GetById(id);
-            if (tmp == null)
+            var tmp = _repository.GetById(id);
+            if (tmp == null || string.IsNullOrWhiteSpace(carDto))
             {
                 return BadRequest();
             }
 
+            var car = JsonConvert.DeserializeObject<CarDto>(carDto);
             var result = _mapper.Map<Car>(car);
-            _unitOfWork.CarRepository.Update(result);
+            _repository.Update(result);
 
             try
             {
@@ -76,7 +95,7 @@ namespace CarAssistance.Controllers
                 }
                 else
                 {
-                    throw;
+                    BadRequest();
                 }
             }
 
@@ -85,36 +104,41 @@ namespace CarAssistance.Controllers
 
         // POST: api/Cars
         [HttpPost]
-        public async Task<ActionResult<CarDto>> PostCar(CarDto car)
+        public async Task<ActionResult<CarDto>> PostCar(string carDto)
         {
-            var carUnit = _mapper.Map<Car>(car);
-            if (carUnit != null)
+            if (string.IsNullOrWhiteSpace(carDto)) 
+            {
+                BadRequest("Can't Add empty dto");
+            }
 
-             await  Task.Run(()=> _unitOfWork.CarRepository.Add(carUnit));
-            _unitOfWork.Commit();
+            var carUnit = JsonConvert.DeserializeObject<CarDto>(carDto);
 
-            return CreatedAtAction("GetCar", new {id = carUnit?.Id}, car);
+            var entity = _mapper.Map<Car>(carUnit);
+            await _repository.AddAsync(entity).ConfigureAwait(false);
+            await _unitOfWork.CommitAsync().ConfigureAwait(false);
+
+            return CreatedAtAction("GetCar", new {id = entity?.Id}, carUnit);
         }
 
         // DELETE: api/Cars/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Car>> DeleteCar(int id)
         {
-            var car = _unitOfWork.CarRepository.GetById(id);
+            var car = _repository.GetById(id);
             if (car == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.CarRepository.Remove(car);
-            _unitOfWork.Commit();
+            await _repository.RemoveAsync(car).ConfigureAwait(false);
+            await _unitOfWork.CommitAsync().ConfigureAwait(false);
 
             return car;
         }
 
         private bool CarExists(int id)
         {
-            var car = _unitOfWork.CarRepository.GetById(id);
+            var car = _repository.GetById(id);
             return car != null;
         }
     }
