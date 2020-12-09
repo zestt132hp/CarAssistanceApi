@@ -18,15 +18,15 @@ namespace CarAssistance.Controllers
     public class CarsController : ControllerBases
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ICarRepo _repository;
+        private readonly ICarRepo _repository;        
+        private readonly IMapper _mapper;
 
-        [Obsolete]
+        [Obsolete("Пример использование запроса по полям в БД")]
         private readonly string[] _includeProperty = new[]
         {
             nameof(Car.BodyType), nameof(Car.Characteristics), nameof(Car.Engine), nameof(Car.GearBox),
             nameof(Car.Manufacter), nameof(Car.Model), nameof(Car.Tires)
         };
-        private readonly IMapper _mapper;
         public CarsController(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;

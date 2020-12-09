@@ -6,6 +6,5 @@ namespace CarAssistance.Models
         public int Id { get; set; }
 
         public string FuelType { get; set; }
-
     }
 }
