@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,8 @@ using CarAssistance.Data.Repository;
 using Shared.Contracts.DtoModels;
 using CarAssistance.Data.IRepos;
 using System;
-using Newtonsoft.Json;
+using CarAssistance.Exceptions;
+using CarAssistance.Extensions.StringExtensions;
 
 namespace CarAssistance.Controllers
 {
@@ -47,7 +47,7 @@ namespace CarAssistance.Controllers
 
             if (cars == null) 
             {
-                return BadRequest();
+                return NotFound();
             }
 
             var result = _mapper.Map<CarDto[]>(cars);
@@ -62,7 +62,9 @@ namespace CarAssistance.Controllers
             var car = await _repository.GetByIdAsync(id).ConfigureAwait(false);
             if (car == null)
             {
-                return NotFound();
+                return NotFound(
+                    ExceptionMessageHeaders.GetMessage(ExceptionMessageHeaders.CanNotFoundEntityWithId, id)
+                    );
             }
 
             var result = _mapper.Map<CarDto>(car);
@@ -76,10 +78,15 @@ namespace CarAssistance.Controllers
             var tmp = _repository.GetById(id);
             if (tmp == null || string.IsNullOrWhiteSpace(carDto))
             {
-                return BadRequest();
+                return NotFound(ExceptionMessageHeaders.GetMessage(ExceptionMessageHeaders.CanNotFoundEntityWithId, id));
             }
 
-            var car = JsonConvert.DeserializeObject<CarDto>(carDto);
+            var car = carDto.GetDto<CarDto>();
+            if (car == null) 
+            {
+                return BadRequest(ExceptionMessageHeaders.CanNotRecognizeInputModel);
+            }
+
             var result = _mapper.Map<Car>(car);
             _repository.Update(result);
 
@@ -99,25 +106,25 @@ namespace CarAssistance.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(result);
         }
 
         // POST: api/Cars
         [HttpPost]
         public async Task<ActionResult<CarDto>> PostCar(string carDto)
         {
-            if (string.IsNullOrWhiteSpace(carDto)) 
+            var dto = carDto.GetDto<CarDto>();
+
+            if (dto == null) 
             {
-                BadRequest("Can't Add empty dto");
+                BadRequest(ExceptionMessageHeaders.CanNotRecognizeInputModel);
             }
 
-            var carUnit = JsonConvert.DeserializeObject<CarDto>(carDto);
-
-            var entity = _mapper.Map<Car>(carUnit);
+            var entity = _mapper.Map<Car>(dto);
             await _repository.AddAsync(entity).ConfigureAwait(false);
             await _unitOfWork.CommitAsync().ConfigureAwait(false);
 
-            return CreatedAtAction("GetCar", new {id = entity?.Id}, carUnit);
+            return CreatedAtAction("GetCar", new {id = entity?.Id}, dto);
         }
 
         // DELETE: api/Cars/5
@@ -127,7 +134,7 @@ namespace CarAssistance.Controllers
             var car = _repository.GetById(id);
             if (car == null)
             {
-                return NotFound();
+                return NotFound(ExceptionMessageHeaders.GetMessage(ExceptionMessageHeaders.CanNotFoundEntityWithId, id));
             }
 
             await _repository.RemoveAsync(car).ConfigureAwait(false);

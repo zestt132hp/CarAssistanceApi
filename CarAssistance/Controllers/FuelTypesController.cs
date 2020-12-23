@@ -9,6 +9,8 @@ using AutoMapper;
 using CarAssistance.Data.IRepos;
 using Newtonsoft.Json;
 using Shared.Contracts.DtoModels;
+using CarAssistance.Exceptions;
+using CarAssistance.Extensions.StringExtensions;
 
 namespace CarAssistance.Controllers
 {
@@ -51,7 +53,7 @@ namespace CarAssistance.Controllers
 
             if (fuelType == null)
             {
-                return NotFound();
+                return NotFound(ExceptionMessageHeaders.GetMessage(ExceptionMessageHeaders.GetMessage(ExceptionMessageHeaders.CanNotFoundEntityWithId, id)));
             }
 
             var dto = _mapper.Map<FuelTypeDto>(fuelType);
@@ -63,13 +65,13 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFuelType(int id, string fuelTypeEntity)
         {
-            if (string.IsNullOrWhiteSpace(fuelTypeEntity))
+            var dto = fuelTypeEntity.GetDto<FuelTypeDto>();
+            if (string.IsNullOrWhiteSpace(fuelTypeEntity)|| dto == null)
             {
-                return BadRequest("Can't update empty model");
+                return BadRequest(ExceptionMessageHeaders.CanNotRecognizeInputModel);
             }
 
-            var deserializeObject = JsonConvert.DeserializeObject<FuelTypeDto>(fuelTypeEntity);
-            var fuelTypeDto = _mapper.Map<Fuel>(deserializeObject);
+            var fuelTypeDto = _mapper.Map<Fuel>(dto);
             fuelTypeDto.Id = id;
 
             _repository.Update(fuelTypeDto);
@@ -89,27 +91,23 @@ namespace CarAssistance.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(); 
         }
 
         // POST: api/FuelTypes
         [HttpPost]
         public async Task<ActionResult<FuelTypeDto>> PostFuelType(string fuelTypeEntity)
         {
-            if (string.IsNullOrWhiteSpace(fuelTypeEntity)) 
+            var dto = fuelTypeEntity.GetDto<FuelTypeDto>();
+            if (string.IsNullOrWhiteSpace(fuelTypeEntity) || dto == null) 
             {
-                return BadRequest("Can't Add empty model");
-            }
-            var fuelTypeDto = JsonConvert.DeserializeObject<Fuel>(fuelTypeEntity);
-            if (fuelTypeDto == null) 
-            {
-                return BadRequest("Error deserialize input object");
+                return BadRequest(ExceptionMessageHeaders.CanNotRecognizeInputModel);
             }
 
-            await _repository.AddAsync(_mapper.Map<Fuel>(fuelTypeDto)).ConfigureAwait(false);
+            await _repository.AddAsync(_mapper.Map<Fuel>(dto)).ConfigureAwait(false);
             await _unitOfWork.CommitAsync().ConfigureAwait(false);
 
-            return CreatedAtAction("GetFuelType", new { id = fuelTypeDto.Id }, fuelTypeDto);
+            return CreatedAtAction("GetFuelType", dto);
         }
 
         // DELETE: api/FuelTypes/5
