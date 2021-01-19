@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarAssistance.Models;
-using CarAssistance.Models.DTO;
 using CarAssistance.Data.Repository;
+using Shared.Contracts.DtoModels;
+using CarAssistance.Data.IRepos;
+using System;
+using CarAssistance.Exceptions;
+using CarAssistance.Extensions.StringExtensions;
 
 namespace CarAssistance.Controllers
 {
@@ -15,36 +18,53 @@ namespace CarAssistance.Controllers
     public class CarsController : ControllerBases
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICarRepo _repository;        
+        private readonly IMapper _mapper;
 
+        [Obsolete("Пример использование запроса по полям в БД")]
         private readonly string[] _includeProperty = new[]
         {
             nameof(Car.BodyType), nameof(Car.Characteristics), nameof(Car.Engine), nameof(Car.GearBox),
             nameof(Car.Manufacter), nameof(Car.Model), nameof(Car.Tires)
         };
-        private readonly IMapper _mapper;
         public CarsController(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+
+            if (unitOfWork == null) 
+            {
+                throw new NullReferenceException(nameof(unitOfWork));
+            }
+            _repository = unitOfWork.CarRepository;
         }
 
         // GET: api/Cars
         [HttpGet]
-        public IEnumerable<CarDto> GetCar()
+        public async Task<ActionResult<IEnumerable<CarDto>>> GetCar()
         {
-            var cars = _mapper.Map<IEnumerable<CarDto>>(_unitOfWork.CarRepository.GetByExpression(null, null,
-                _includeProperty.Aggregate((x, y)=> $"{x}, {y}")));
-            return cars;
+            var cars = await _repository.GetAllAsync().ConfigureAwait(false);
+
+            if (cars == null) 
+            {
+                return NotFound();
+            }
+
+            var result = _mapper.Map<CarDto[]>(cars);
+
+            return result;
         }
 
         // GET: api/Cars/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CarDto>> GetCar(int id)
         {
-            var car = _unitOfWork.CarRepository.GetById(id);
+            var car = await _repository.GetByIdAsync(id).ConfigureAwait(false);
             if (car == null)
             {
-                return NotFound();
+                return NotFound(
+                    ExceptionMessageHeaders.GetMessage(ExceptionMessageHeaders.CanNotFoundEntityWithId, id)
+                    );
             }
 
             var result = _mapper.Map<CarDto>(car);
@@ -53,16 +73,22 @@ namespace CarAssistance.Controllers
 
         // PUT: api/Cars/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCar(int id, CarDto car)
+        public async Task<IActionResult> PutCar(int id, string carDto)
         {
-            var tmp = _unitOfWork.CarRepository.GetById(id);
-            if (tmp == null)
+            var tmp = _repository.GetById(id);
+            if (tmp == null || string.IsNullOrWhiteSpace(carDto))
             {
-                return BadRequest();
+                return NotFound(ExceptionMessageHeaders.GetMessage(ExceptionMessageHeaders.CanNotFoundEntityWithId, id));
+            }
+
+            var car = carDto.GetDto<CarDto>();
+            if (car == null) 
+            {
+                return BadRequest(ExceptionMessageHeaders.CanNotRecognizeInputModel);
             }
 
             var result = _mapper.Map<Car>(car);
-            _unitOfWork.CarRepository.Update(result);
+            _repository.Update(result);
 
             try
             {
@@ -76,45 +102,50 @@ namespace CarAssistance.Controllers
                 }
                 else
                 {
-                    throw;
+                    BadRequest();
                 }
             }
 
-            return NoContent();
+            return Ok(result);
         }
 
         // POST: api/Cars
         [HttpPost]
-        public async Task<ActionResult<CarDto>> PostCar(CarDto car)
+        public async Task<ActionResult<CarDto>> PostCar(string carDto)
         {
-            var carUnit = _mapper.Map<Car>(car);
-            if (carUnit != null)
+            var dto = carDto.GetDto<CarDto>();
 
-             await  Task.Run(()=> _unitOfWork.CarRepository.Add(carUnit));
-            _unitOfWork.Commit();
+            if (dto == null) 
+            {
+                BadRequest(ExceptionMessageHeaders.CanNotRecognizeInputModel);
+            }
 
-            return CreatedAtAction("GetCar", new {id = carUnit?.CarId}, car);
+            var entity = _mapper.Map<Car>(dto);
+            await _repository.AddAsync(entity).ConfigureAwait(false);
+            await _unitOfWork.CommitAsync().ConfigureAwait(false);
+
+            return CreatedAtAction("GetCar", new {id = carUnit?.Id}, car);
         }
 
         // DELETE: api/Cars/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Car>> DeleteCar(int id)
         {
-            var car = _unitOfWork.CarRepository.GetById(id);
+            var car = _repository.GetById(id);
             if (car == null)
             {
-                return NotFound();
+                return NotFound(ExceptionMessageHeaders.GetMessage(ExceptionMessageHeaders.CanNotFoundEntityWithId, id));
             }
 
-            _unitOfWork.CarRepository.Remove(car);
-            _unitOfWork.Commit();
+            await _repository.RemoveAsync(car).ConfigureAwait(false);
+            await _unitOfWork.CommitAsync().ConfigureAwait(false);
 
             return car;
         }
 
         private bool CarExists(int id)
         {
-            var car = _unitOfWork.CarRepository.GetById(id);
+            var car = _repository.GetById(id);
             return car != null;
         }
     }

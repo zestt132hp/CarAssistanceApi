@@ -1,0 +1,46 @@
+version: '3.4'
+
+services:
+  carassistance:
+    image: ${DOCKER_REGISTRY-}carassistance
+    ports:
+        - "32768:443"
+        - "32767:80"
+    build:
+      context: .
+      dockerfile: CarAssistance/Dockerfile
+    depends_on: 
+        - CarAssistanceDb
+    networks:
+        - app-network
+  CarAssistanceDb:
+        container_name: "CarAssistanceDb"
+        image: postgres:latest
+        restart: always
+        ports: 
+            - "5432:5432"
+        environment: 
+           - POSTGRES_DB=CarAssistanceDb
+           - POSTGRES_USER=admin
+           - POSTGRES_PASSWORD=qwe123
+        volumes: 
+           - /SQLScripts/BackUp.sql:/var/lib/postgresql
+        networks:
+        - app-network
+
+  PgAdmin:
+        image: dpage/pgadmin4
+        restart: unless-stopped                    
+        container_name: "PgAdmin"
+        ports:
+            - "8000:80"
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=zestt132hp@gmail.com
+            - PGADMIN_DEFAULT_PASSWORD=qwe123
+        depends_on:
+            - CarAssistanceDb
+        networks:
+        - app-network
+networks:
+  app-network:
+    driver: bridge

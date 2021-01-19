@@ -8,5 +8,10 @@ namespace CarAssistance.Controllers
         {
 
         }
+
+        public bool ValidateInputModel(string inputModelDto) 
+        {
+            return string.IsNullOrWhiteSpace(inputModelDto);
+        }
     }
 }

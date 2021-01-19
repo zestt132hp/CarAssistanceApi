@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CarAssistance.Data;
 using CarAssistance.Models;
-using CarAssistance.Models.DTO;
-using Microsoft.Extensions.Configuration;
 using CarAssistance.Data.Repository;
+using Shared.Contracts.DtoModels;
+
 
 namespace CarAssistance.Controllers
 {

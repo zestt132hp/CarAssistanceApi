@@ -1,5 +1,4 @@
-﻿
-namespace CarAssistance.Models.DTO
+﻿namespace Shared.Contracts.DtoModels
 {
     public class TiresDto
     {

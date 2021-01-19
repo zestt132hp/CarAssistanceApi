@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using CarAssistance.Models;
-using CarAssistance.Models.DTO;
 using AutoMapper;
 using CarAssistance.Data.Repository;
+using Shared.Contracts.DtoModels;
+using CarAssistance.Data.IRepos;
+using CarAssistance.Extensions.StringExtensions;
+using CarAssistance.Exceptions;
 
 namespace CarAssistance.Controllers
 {
@@ -13,20 +15,22 @@ namespace CarAssistance.Controllers
     [ApiController]
     public class BodyTypesController : ControllerBases
     {        
-        private IUnitOfWork _UoW;
+        private readonly IUnitOfWork _UoW;
         private readonly IMapper _mapper;
+        private readonly IBodyTypeRepo _repository;
 
         public BodyTypesController(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _UoW = unitOfWork;
             _mapper = mapper;
+            _repository = unitOfWork?.BodyTypeRepository;
         }
 
         // GET: api/BodyTypes
         [HttpGet]
         public IEnumerable<BodyTypeDto> GetBodyType()
         {
-            var bodyTypes = _UoW.BodyTypeRepository.GetAll();
+            var bodyTypes = _repository.GetAll();
             var bTypesDto = _mapper.Map<BodyTypeDto[]>(bodyTypes);
             return bTypesDto;
         }
@@ -35,69 +39,79 @@ namespace CarAssistance.Controllers
         [HttpGet("{id}")]
         public ActionResult<BodyTypeDto> GetBodyType(int id)
         {
-            var bodyType = _UoW.BodyTypeRepository.GetById(id);
+            var bodyType = _repository.GetById(id);
             if (bodyType == null)
             {
                 return NotFound();
             }
 
-            return _mapper.Map<BodyTypeDto>(bodyType);
+            var result = _mapper.Map<BodyTypeDto>(bodyType);
+
+            return Ok(result);
         }
 
         // PUT: api/BodyTypes/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBodyType(int id, BodyTypeDto bodyTypeDto)
+        public async Task<IActionResult> PutBodyType(int id, string bodyTypeDto)
         {
-            var bodyType = _mapper.Map<BodyType>(bodyTypeDto);
-            bodyType.Id = id;
-            await _UoW.BodyTypeRepository.UpdateAsync(bodyType).ConfigureAwait(false);
+            var dto = bodyTypeDto.GetDto<BodyTypeDto>();
 
-            try
+            if(dto == null)
             {
-                await _UoW.CommitAsync().ConfigureAwait(false);
+                return BadRequest(ExceptionMessageHeaders.CanNotRecognizeInputModel);
             }
-            catch (DbUpdateConcurrencyException)
+
+            if (!BodyTypeExists(id))
             {
-                if (!BodyTypeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound(ExceptionMessageHeaders.GetMessage(ExceptionMessageHeaders.CanNotFoundEntityWithId, id));
             }
+
+            var bodyType = _mapper.Map<BodyType>(dto);
+            bodyType.Id = id;
+
+            await _repository.UpdateAsync(bodyType).ConfigureAwait(false);
+            await _UoW.CommitAsync().ConfigureAwait(false);
+            
             return Ok();
         }
 
         // POST: api/BodyTypes
         [HttpPost]
-        public async Task<ActionResult<BodyTypeDto>> PostBodyType(BodyTypeDto bodyType)
+        public async Task<IActionResult> PostBodyType(string bodyType)
         {
-            var body = _mapper.Map<BodyType>(bodyType);
-            _UoW.BodyTypeRepository.Add(body);
+            var dto = bodyType.GetDto<BodyTypeDto>();
+
+            if(dto == null)
+            {
+                return BadRequest(ExceptionMessageHeaders.CanNotRecognizeInputModel);
+            }
+
+            var body = _mapper.Map<BodyType>(dto);
+            await _repository.AddAsync(body).ConfigureAwait(false);
             await _UoW.CommitAsync().ConfigureAwait(false);
-            return CreatedAtAction("GetBodyType", new { id = body.Id }, bodyType);
+
+            return Ok(body);
         }
 
         // DELETE: api/BodyTypes/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<BodyType>> DeleteBodyType(int id)
+        public async Task<IActionResult> DeleteBodyType(int id)
         {
             var bodyType = 
-                await Task.Run(() => _UoW.BodyTypeRepository.GetById(id)).ConfigureAwait(false);
+                await Task.Run(() => _repository.GetById(id)).ConfigureAwait(false);
             if (bodyType == null)
             {
                 return NotFound();
             }
-            _UoW.BodyTypeRepository.Remove(bodyType);
+            _repository.Remove(bodyType);
             await _UoW.CommitAsync().ConfigureAwait(false);
-            return bodyType;
+
+            return Ok();
         }
 
         private bool BodyTypeExists(int id)
         {
-            if (_UoW.BodyTypeRepository.GetById(id) != null)
+            if (_repository.GetById(id) != null)
                 return true;
             return false;
         }

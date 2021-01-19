@@ -7,6 +7,7 @@ namespace CarAssistance.Models
         public int ModelId { get; set; }
         public string ModelName { get; set; }
         public DateTime YearStart { get; set; }
-        public DateTime YearEnd { get; set; }
+        public DateTime? YearEnd { get; set; }
+        public Manufacters Manufacters { get; set; }
     }
 }

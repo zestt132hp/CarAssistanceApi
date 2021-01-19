@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CarAssistance.Models.DTO
+namespace Shared.Contracts.DtoModels
 {
     public class UserDto
     {

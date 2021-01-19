@@ -4,8 +4,12 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarAssistance.Models;
-using CarAssistance.Models.DTO;
 using CarAssistance.Data.Repository;
+using Shared.Contracts.DtoModels;
+using CarAssistance.Data.IRepos;
+using System;
+using CarAssistance.Exceptions;
+using CarAssistance.Extensions.StringExtensions;
 
 namespace CarAssistance.Controllers
 {
@@ -15,26 +19,34 @@ namespace CarAssistance.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IEngineRepo _repository;
         public EnginesController(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+
+            if (unitOfWork == null) 
+            {
+                throw new NullReferenceException(nameof(unitOfWork));
+            }
+
+            _repository = unitOfWork.EngineRepository;
         }
 
         // GET: api/Engines
         [HttpGet]
-        public ActionResult<IEnumerable<EngineDto>> GetEngine()
+        public async Task<IEnumerable<EngineDto>> GetEngine()
         {
-            var engines =
-                _mapper.Map<IEnumerable<EngineDto>>(_unitOfWork.EngineRepository.GetByExpression(null, null, nameof(Engine.Fuel)));
-            return new ActionResult<IEnumerable<EngineDto>>(engines);
+            var engines = await _repository.GetAllAsync().ConfigureAwait(false);
+            var engineDtos = _mapper.Map<EngineDto[]>(engines);
+            return engineDtos;
         }
 
         // GET: api/Engines/5
         [HttpGet("{id}")]
         public async Task<ActionResult<EngineDto>> GetEngine(int id)
         {
-            var engine = _unitOfWork.EngineRepository.GetById(id);
+            var engine = await _repository.GetByIdAsync(id).ConfigureAwait(false);
             if (engine == null)
             {
                 return NotFound();
@@ -46,26 +58,35 @@ namespace CarAssistance.Controllers
 
         // PUT: api/Engines/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEngine(int id, EngineDto engine)
+        public async Task<IActionResult> PutEngine(int id, string engineDto)
         {
-            var engineUnit = _unitOfWork.EngineRepository.GetById(id);
-            if (engineUnit == null)
+            var engineUnit = await _repository.GetByIdAsync(id).ConfigureAwait(false);
+            var engineDtoDes = engineDto.GetDto<EngineDto>();
+
+            if (engineUnit == null) 
             {
-                return BadRequest();
+                return NotFound(ExceptionMessageHeaders.GetMessage(ExceptionMessageHeaders.CanNotFoundEntityWithId, id));
             }
 
-            engineUnit = _mapper.Map<Engine>(engine);
-            _unitOfWork.EngineRepository.Update(engineUnit);
+            if (engineDto == null) 
+            {
+                return BadRequest(ExceptionMessageHeaders.CanNotRecognizeInputModel);
+            }
+            
+            engineUnit = _mapper.Map<Engine>(engineDtoDes);
+            engineUnit.Id = id;
+
+            _repository.Update(engineUnit);
 
             try
             {
-                _unitOfWork.Commit();
+               await  _unitOfWork.CommitAsync().ConfigureAwait(false);
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!EngineExists(id))
                 {
-                    return NotFound();
+                    return NotFound(ExceptionMessageHeaders.GetMessage(ExceptionMessageHeaders.CanNotFoundEntityWithId, id));
                 }
                 else
                 {
@@ -73,32 +94,40 @@ namespace CarAssistance.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(engineDtoDes);
         }
 
         // POST: api/Engines
         [HttpPost]
-        public async Task<ActionResult<EngineDto>> PostEngine(EngineDto engine)
+        public async Task<ActionResult<EngineDto>> PostEngine(string engineDto)
         {
-            var unit = _mapper.Map<Engine>(engine);
-            _unitOfWork.EngineRepository.Add(unit);
-            _unitOfWork.Commit();
+            var engineDtoDes = engineDto.GetDto<EngineDto>();
+            if (engineDtoDes == null) 
+            {
+                return BadRequest(ExceptionMessageHeaders.CanNotRecognizeInputModel);
+            }
 
-            return CreatedAtAction("GetEngine", new { id = unit.EngineId }, engine);
+            var unit = _mapper.Map<Engine>(engineDtoDes);
+
+            await _repository.AddAsync(unit).ConfigureAwait(false);
+            await _unitOfWork.CommitAsync().ConfigureAwait(false);
+
+            return engineDtoDes;
         }
 
         // DELETE: api/Engines/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<EngineDto>> DeleteEngine(int id)
         {
-            var engine = _unitOfWork.EngineRepository.GetById(id);
+            var engine = await _repository.GetByIdAsync(id).ConfigureAwait(false);
             if (engine == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.EngineRepository.Remove(engine);
-            _unitOfWork.Commit();
+            await _repository.RemoveAsync(engine).ConfigureAwait(false);
+            await _unitOfWork.CommitAsync().ConfigureAwait(false);
+
             var result = _mapper.Map<EngineDto>(engine);
 
             return result;
@@ -106,7 +135,7 @@ namespace CarAssistance.Controllers
 
         private bool EngineExists(int id)
         {
-            return _unitOfWork.EngineRepository.GetById(id) != null;
+            return _repository.GetById(id) != null;
         }
     }
 }

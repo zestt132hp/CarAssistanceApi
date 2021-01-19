@@ -68,6 +68,7 @@ namespace CarAssistance
             services.AddSpaStaticFiles(config => config.RootPath = "ClientApp/dist");
             services.AddSwaggerDocument(conf =>
             {
+                conf.AddSecurity("Bearer", new NSwag.OpenApiSecurityScheme());
                 conf.PostProcess = document =>
                 {
                     document.Info.Version = "v1";

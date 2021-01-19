@@ -16,20 +16,66 @@ namespace CarAssistance.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("public")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            modelBuilder.Entity("CarAssistance.Models.Account", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastLogin")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Accounts");
+                });
 
             modelBuilder.Entity("CarAssistance.Models.BodyType", b =>
                 {
-                    b.Property<int>("BodyTypeId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("BodyTypeName");
+                    b.Property<string>("BodyTypeName")
+                        .HasColumnType("text");
 
-                    b.Property<int>("CountDoors");
+                    b.Property<int>("CountDoors")
+                        .HasColumnType("integer");
 
-                    b.HasKey("BodyTypeId");
+                    b.HasKey("Id");
 
                     b.ToTable("BodyType");
                 });
@@ -37,9 +83,12 @@ namespace CarAssistance.Migrations
             modelBuilder.Entity("CarAssistance.Models.BrandTires", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("BrandName");
+                    b.Property<int>("BrandName")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -48,26 +97,45 @@ namespace CarAssistance.Migrations
 
             modelBuilder.Entity("CarAssistance.Models.Car", b =>
                 {
-                    b.Property<int>("CarId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("BodyTypeId");
+                    b.Property<int>("BodyTypeId")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("CharacteristicsId");
+                    b.Property<int>("CarCharcsId")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("EngineId");
+                    b.Property<int>("CarNameId")
+                        .HasColumnType("integer");
 
-                    b.Property<int?>("GarageId");
+                    b.Property<int?>("CharacteristicsId")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("GearBoxId");
+                    b.Property<int>("EngineId")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("ManufacterId");
+                    b.Property<int>("GarageId")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("ModelId");
+                    b.Property<int>("GearBoxesId")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("TiresId");
+                    b.Property<int>("ManufactersId")
+                        .HasColumnType("integer");
 
-                    b.HasKey("CarId");
+                    b.Property<int?>("ModelId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ModelsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TiresId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("BodyTypeId");
 
@@ -77,9 +145,9 @@ namespace CarAssistance.Migrations
 
                     b.HasIndex("GarageId");
 
-                    b.HasIndex("GearBoxId");
+                    b.HasIndex("GearBoxesId");
 
-                    b.HasIndex("ManufacterId");
+                    b.HasIndex("ManufactersId");
 
                     b.HasIndex("ModelId");
 
@@ -90,118 +158,171 @@ namespace CarAssistance.Migrations
 
             modelBuilder.Entity("CarAssistance.Models.CarCharacteristics", b =>
                 {
-                    b.Property<int>("CarCharacteristicsId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("MileageNow");
+                    b.Property<string>("Color")
+                        .HasColumnType("text");
 
-                    b.Property<int>("MileageRegister");
+                    b.Property<int>("MileageNow")
+                        .HasColumnType("integer");
 
-                    b.Property<int?>("OilId");
+                    b.Property<int>("MileageRegister")
+                        .HasColumnType("integer");
 
-                    b.HasKey("CarCharacteristicsId");
+                    b.Property<int>("OilInfoId")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("OilId");
+                    b.Property<DateTime>("Year")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OilInfoId");
 
                     b.ToTable("CarCharacteristics");
                 });
 
             modelBuilder.Entity("CarAssistance.Models.Engine", b =>
                 {
-                    b.Property<int>("EngineId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<double>("CapacityEngine");
+                    b.Property<double>("CapacityEngine")
+                        .HasColumnType("double precision");
 
-                    b.Property<int>("CountHp");
+                    b.Property<int>("CountHPower")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("CountKw");
+                    b.Property<int>("CountKwt")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("EngineNumber");
+                    b.Property<string>("EngineNumber")
+                        .HasColumnType("text");
 
-                    b.Property<int?>("FuelTypeId");
+                    b.Property<int>("FuelId")
+                        .HasColumnType("integer");
 
-                    b.HasKey("EngineId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("FuelTypeId");
+                    b.HasIndex("FuelId");
 
                     b.ToTable("Engine");
                 });
 
-            modelBuilder.Entity("CarAssistance.Models.FuelType", b =>
+            modelBuilder.Entity("CarAssistance.Models.Fuel", b =>
                 {
-                    b.Property<int>("FuelTypeId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("FuelTypeName");
+                    b.Property<string>("FuelType")
+                        .HasColumnType("text");
 
-                    b.HasKey("FuelTypeId");
+                    b.HasKey("Id");
 
                     b.ToTable("FuelType");
                 });
 
             modelBuilder.Entity("CarAssistance.Models.Garage", b =>
                 {
-                    b.Property<int>("GarageId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("DateRegister")
                         .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Note");
+                    b.Property<int>("UserNotesId")
+                        .HasColumnType("integer");
 
-                    b.Property<Guid>("UserId");
+                    b.HasKey("Id");
 
-                    b.HasKey("GarageId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("AccountId");
 
                     b.ToTable("Garage");
                 });
 
-            modelBuilder.Entity("CarAssistance.Models.GearBox", b =>
+            modelBuilder.Entity("CarAssistance.Models.GearBoxes", b =>
                 {
-                    b.Property<int>("GearBoxId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("CountGear");
+                    b.Property<int>("CountGears")
+                        .HasColumnType("integer");
 
                     b.Property<string>("GearBoxType")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("GearNumber")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.HasKey("GearBoxId");
+                    b.Property<string>("NumberGearBox")
+                        .HasColumnType("text");
+
+                    b.Property<int>("VehicleDriveId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
 
                     b.ToTable("GearBox");
                 });
 
-            modelBuilder.Entity("CarAssistance.Models.Manufacter", b =>
+            modelBuilder.Entity("CarAssistance.Models.Manufacters", b =>
                 {
-                    b.Property<int>("ManufacterId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Brand");
+                    b.Property<string>("Brand")
+                        .HasColumnType("text");
 
-                    b.HasKey("ManufacterId");
+                    b.HasKey("Id");
 
                     b.ToTable("Manufacter");
                 });
 
             modelBuilder.Entity("CarAssistance.Models.Model", b =>
                 {
-                    b.Property<int>("ModelId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("ModelName");
+                    b.Property<int?>("ManufactersId")
+                        .HasColumnType("integer");
 
-                    b.Property<DateTime>("YearEnd");
+                    b.Property<string>("ModelName")
+                        .HasColumnType("text");
 
-                    b.Property<DateTime>("YearStart");
+                    b.Property<DateTime?>("YearEnd")
+                        .HasColumnType("timestamp without time zone");
 
-                    b.HasKey("ModelId");
+                    b.Property<DateTime>("YearStart")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ManufactersId");
 
                     b.ToTable("Models");
                 });
@@ -209,63 +330,117 @@ namespace CarAssistance.Migrations
             modelBuilder.Entity("CarAssistance.Models.ModelTires", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("ModelName");
+                    b.Property<string>("ModelName")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("ModelTires");
                 });
 
-            modelBuilder.Entity("CarAssistance.Models.Oil", b =>
+            modelBuilder.Entity("CarAssistance.Models.Notes", b =>
                 {
-                    b.Property<int>("OilId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Acea");
+                    b.Property<string>("Nodes")
+                        .HasColumnType("text");
 
-                    b.Property<string>("Api");
+                    b.Property<int?>("UserNotesId")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("Manufacter");
+                    b.HasKey("Id");
 
-                    b.Property<string>("Model");
+                    b.HasIndex("UserNotesId");
 
-                    b.Property<string>("Sae");
+                    b.ToTable("Notes");
+                });
 
-                    b.Property<string>("TypeOil");
+            modelBuilder.Entity("CarAssistance.Models.OilInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.HasKey("OilId");
+                    b.Property<int>("FuelId")
+                        .HasColumnType("integer");
 
-                    b.ToTable("Oil");
+                    b.Property<string>("OilModel")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OilName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OilTempeatureSae")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OilType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OilViscositySae")
+                        .HasColumnType("text");
+
+                    b.Property<double>("OilVolume")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("SpecificationAcea")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SpecificationApi")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SpecificationOem")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FuelId");
+
+                    b.ToTable("OilInfo");
                 });
 
             modelBuilder.Entity("CarAssistance.Models.Tires", b =>
                 {
-                    b.Property<int>("TiresId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int?>("BrandId");
+                    b.Property<int?>("BrandId")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("Height");
+                    b.Property<int>("Height")
+                        .HasColumnType("integer");
 
-                    b.Property<int?>("ModelId");
+                    b.Property<int?>("ModelId")
+                        .HasColumnType("integer");
 
-                    b.Property<double>("Radius");
+                    b.Property<double>("Radius")
+                        .HasColumnType("double precision");
 
-                    b.Property<int?>("SeasonId");
+                    b.Property<int>("TiresSeasonId")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("Width");
+                    b.Property<int>("Width")
+                        .HasColumnType("integer");
 
-                    b.Property<int>("YearStartSale");
+                    b.Property<int>("YearStartSales")
+                        .HasColumnType("integer");
 
-                    b.HasKey("TiresId");
+                    b.HasKey("Id");
 
                     b.HasIndex("BrandId");
 
                     b.HasIndex("ModelId");
 
-                    b.HasIndex("SeasonId");
+                    b.HasIndex("TiresSeasonId");
 
                     b.ToTable("Tires");
                 });
@@ -273,36 +448,75 @@ namespace CarAssistance.Migrations
             modelBuilder.Entity("CarAssistance.Models.TiresSeason", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Season");
+                    b.Property<string>("Season")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("TiresSeason");
                 });
 
+            modelBuilder.Entity("CarAssistance.Models.UserNotes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("GarageId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NoteId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("GarageId");
+
+                    b.ToTable("UserNotes");
+                });
+
             modelBuilder.Entity("CarAssistance.Models.Users", b =>
                 {
                     b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Email")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("FirstName")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
 
                     b.Property<string>("LogIn")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Phone")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Status")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("UserId");
 
@@ -321,9 +535,12 @@ namespace CarAssistance.Migrations
             modelBuilder.Entity("CarAssistance.Models.VehicleDrive", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("TypeVehicleDrive");
+                    b.Property<string>("TypeVehicleDrive")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -335,63 +552,96 @@ namespace CarAssistance.Migrations
                     b.HasOne("CarAssistance.Models.BodyType", "BodyType")
                         .WithMany()
                         .HasForeignKey("BodyTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CarAssistance.Models.CarCharacteristics", "Characteristics")
                         .WithMany()
-                        .HasForeignKey("CharacteristicsId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CharacteristicsId");
 
                     b.HasOne("CarAssistance.Models.Engine", "Engine")
                         .WithMany()
                         .HasForeignKey("EngineId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("CarAssistance.Models.Garage")
-                        .WithMany("Car")
-                        .HasForeignKey("GarageId");
+                    b.HasOne("CarAssistance.Models.Garage", "Garage")
+                        .WithMany("Cars")
+                        .HasForeignKey("GarageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("CarAssistance.Models.GearBox", "GearBox")
+                    b.HasOne("CarAssistance.Models.GearBoxes", "GearBox")
                         .WithMany()
-                        .HasForeignKey("GearBoxId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("GearBoxesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("CarAssistance.Models.Manufacter", "Manufacter")
+                    b.HasOne("CarAssistance.Models.Manufacters", "Manufacter")
                         .WithMany()
-                        .HasForeignKey("ManufacterId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ManufactersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CarAssistance.Models.Model", "Model")
                         .WithMany()
-                        .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ModelId");
 
                     b.HasOne("CarAssistance.Models.Tires", "Tires")
                         .WithMany()
                         .HasForeignKey("TiresId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CarAssistance.Models.CarCharacteristics", b =>
                 {
-                    b.HasOne("CarAssistance.Models.Oil", "Oil")
+                    b.HasOne("CarAssistance.Models.OilInfo", "Oil")
                         .WithMany()
-                        .HasForeignKey("OilId");
+                        .HasForeignKey("OilInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CarAssistance.Models.Engine", b =>
                 {
-                    b.HasOne("CarAssistance.Models.FuelType", "Fuel")
+                    b.HasOne("CarAssistance.Models.Fuel", "Fuel")
                         .WithMany()
-                        .HasForeignKey("FuelTypeId");
+                        .HasForeignKey("FuelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CarAssistance.Models.Garage", b =>
                 {
-                    b.HasOne("CarAssistance.Models.Users", "User")
+                    b.HasOne("CarAssistance.Models.Account", "Account")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CarAssistance.Models.Model", b =>
+                {
+                    b.HasOne("CarAssistance.Models.Manufacters", "Manufacters")
+                        .WithMany()
+                        .HasForeignKey("ManufactersId");
+                });
+
+            modelBuilder.Entity("CarAssistance.Models.Notes", b =>
+                {
+                    b.HasOne("CarAssistance.Models.UserNotes", null)
+                        .WithMany("Notes")
+                        .HasForeignKey("UserNotesId");
+                });
+
+            modelBuilder.Entity("CarAssistance.Models.OilInfo", b =>
+                {
+                    b.HasOne("CarAssistance.Models.Fuel", "Fuel")
+                        .WithMany()
+                        .HasForeignKey("FuelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CarAssistance.Models.Tires", b =>
@@ -406,7 +656,22 @@ namespace CarAssistance.Migrations
 
                     b.HasOne("CarAssistance.Models.TiresSeason", "Season")
                         .WithMany()
-                        .HasForeignKey("SeasonId");
+                        .HasForeignKey("TiresSeasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CarAssistance.Models.UserNotes", b =>
+                {
+                    b.HasOne("CarAssistance.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarAssistance.Models.Garage", null)
+                        .WithMany("UserNotes")
+                        .HasForeignKey("GarageId");
                 });
 #pragma warning restore 612, 618
         }
