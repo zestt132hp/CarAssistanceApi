@@ -3,15 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CarAssistance.Models
 {
-    public class GearBoxes
+    public class GearBox
     {
-        public int Id { get; set; }
+        public int GearBoxId { get; set; }
         [Required]
         public string GearBoxType { get; set; }
         [Required]
-        public int CountGears { get; set; }
-        public string NumberGearBox { get; set; }
-        public int VehicleDriveId { get; set; }
+        public int CountGear { get; set; }
         [Required]
         public string GearNumber { get; set; }
     }

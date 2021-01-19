@@ -57,6 +57,8 @@ namespace CarAssistance
             });
             services.AddScoped<DbContext, Data.NpgSqlDataContext>();
             services.AddScoped<IUnitOfWork, UoW>();
+            services.AddEntityFrameworkNpgsql();
+
 
             var mappingConfig = new MapperConfiguration(conf => { conf.AddProfile(new Data.MappingProfile()); });
             IMapper mapper = mappingConfig.CreateMapper();

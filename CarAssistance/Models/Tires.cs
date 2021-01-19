@@ -4,11 +4,10 @@ namespace CarAssistance.Models
 {
     public class Tires
     {
-        public int Id { get; set; }
+        public int TiresId { get; set; }
 
-        public int TiresSeasonId { get; set; }
         public TiresSeason  Season { get; set; }
-        public int YearStartSales { get; set; }
+        public int YearStartSale { get; set; }
         public BrandTires Brand { get; set; }
         public ModelTires Model { get; set; }
         public int Height { get; set; }

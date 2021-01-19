@@ -2,7 +2,7 @@
 
 namespace CarAssistance.Data.IRepos
 {
-    interface ICarCharacteristicsRepo : IRepository<CarCharacteristics>
+    interface ICarCharacteristicsRepo : IRepository<Car_Characteristics>
     {
     }
 }

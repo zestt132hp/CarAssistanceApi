@@ -2,7 +2,7 @@
 
 namespace CarAssistance.Data.IRepos
 {
-    interface IOilRepo: IRepository<OilInfo>
+    interface IOilRepo: IRepository<Oil>
     {
     }
 }

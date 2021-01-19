@@ -24,7 +24,7 @@ namespace CarAssistance.Controllers
 
         // GET: api/FuelTypes
         [HttpGet]
-        public ActionResult<IEnumerable<Fuel>> GetFuelType()
+        public ActionResult<IEnumerable<FuelType>> GetFuelType()
         {
             var fuelDto = _unitOfWork.FuelTypeRepository.GetByExpression();
             return fuelDto.ToList();
@@ -32,7 +32,7 @@ namespace CarAssistance.Controllers
 
         // GET: api/FuelTypes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Fuel>> GetFuelType(int id)
+        public async Task<ActionResult<FuelType>> GetFuelType(int id)
         {
             var fuelType = _unitOfWork.FuelTypeRepository.GetById(id);
 
@@ -46,13 +46,13 @@ namespace CarAssistance.Controllers
 
         // PUT: api/FuelTypes/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFuelType(int id, Fuel fuelType)
+        public async Task<IActionResult> PutFuelType(int id, FuelType fuelType)
         {
             if (fuelType == null)
             {
                 throw new NullReferenceException(nameof(fuelType));
             }
-            if (id != fuelType.Id)
+            if (id != fuelType.FuelTypeId)
             {
                 return BadRequest();
             }
@@ -78,18 +78,18 @@ namespace CarAssistance.Controllers
 
         // POST: api/FuelTypes
         [HttpPost]
-        public async Task<ActionResult<Fuel>> PostFuelType(Fuel fuelType)
+        public async Task<ActionResult<FuelType>> PostFuelType(FuelType fuelType)
         {
             _unitOfWork.FuelTypeRepository.Add(fuelType);
             
             _unitOfWork.Commit();
 
-            return CreatedAtAction("GetFuelType", new { id = fuelType?.Id }, fuelType);
+            return CreatedAtAction("GetFuelType", new { id = fuelType?.FuelTypeId }, fuelType);
         }
 
         // DELETE: api/FuelTypes/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Fuel>> DeleteFuelType(int id)
+        public async Task<ActionResult<FuelType>> DeleteFuelType(int id)
         {
             var fuelType = _unitOfWork.FuelTypeRepository.GetById(id);
             if (fuelType == null)

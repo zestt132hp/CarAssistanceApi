@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarAssistance.Data.Repositores
 {
-    public class ManufacterRepository : RepositoryBase<Manufacters>, IManufacterRepo
+    public class ManufacterRepository : RepositoryBase<Manufacter>, IManufacterRepo
     {
         public ManufacterRepository(DbContext context) : base(context)
         {

@@ -21,16 +21,16 @@ namespace CarAssistance.Controllers
 
         // GET: api/Oils
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OilInfo>>> GetOil()
+        public async Task<ActionResult<IEnumerable<Oil>>> GetOil()
         {
-            return await _context.OilInfo.ToListAsync();
+            return await _context.Oil.ToListAsync();
         }
 
         // GET: api/Oils/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OilInfo>> GetOil(int id)
+        public async Task<ActionResult<Oil>> GetOil(int id)
         {
-            var oil = await _context.OilInfo.FindAsync(id);
+            var oil = await _context.Oil.FindAsync(id);
 
             if (oil == null)
             {
@@ -42,9 +42,9 @@ namespace CarAssistance.Controllers
 
         // PUT: api/Oils/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOil(int id, OilInfo oil)
+        public async Task<IActionResult> PutOil(int id, Oil oil)
         {
-            if (id != oil?.Id)
+            if (id != oil?.OilId)
             {
                 return BadRequest();
             }
@@ -72,25 +72,25 @@ namespace CarAssistance.Controllers
 
         // POST: api/Oils
         [HttpPost]
-        public async Task<ActionResult<OilInfo>> PostOil(OilInfo oil)
+        public async Task<ActionResult<Oil>> PostOil(Oil oil)
         {
-            _context.OilInfo.Add(oil);
+            _context.Oil.Add(oil);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOil", new { id = oil?.Id }, oil);
+            return CreatedAtAction("GetOil", new { id = oil?.OilId }, oil);
         }
 
         // DELETE: api/Oils/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<OilInfo>> DeleteOil(int id)
+        public async Task<ActionResult<Oil>> DeleteOil(int id)
         {
-            var oil = await _context.OilInfo.FindAsync(id);
+            var oil = await _context.Oil.FindAsync(id);
             if (oil == null)
             {
                 return NotFound();
             }
 
-            _context.OilInfo.Remove(oil);
+            _context.Oil.Remove(oil);
             await _context.SaveChangesAsync();
 
             return oil;
@@ -98,7 +98,7 @@ namespace CarAssistance.Controllers
 
         private bool OilExists(int id)
         {
-            return _context.OilInfo.Any(e => e.Id == id);
+            return _context.Oil.Any(e => e.OilId == id);
         }
     }
 }

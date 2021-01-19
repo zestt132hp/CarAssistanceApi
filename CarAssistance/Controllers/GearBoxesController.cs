@@ -21,14 +21,14 @@ namespace CarAssistance.Controllers
 
         // GET: api/GearBoxes
         [HttpGet]
-        public IEnumerable<GearBoxes> GetGearBox()
+        public IEnumerable<GearBox> GetGearBox()
         {
             return _unitOfWork.GearBoxRepo.GetByExpression();
         }
 
         // GET: api/GearBoxes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<GearBoxes>> GetGearBox(int id)
+        public async Task<ActionResult<GearBox>> GetGearBox(int id)
         {
             var gearBox = await _unitOfWork.GearBoxRepo.GetByIdAsync(id).ConfigureAwait(false);
             if (gearBox == null)
@@ -41,9 +41,9 @@ namespace CarAssistance.Controllers
 
         // PUT: api/GearBoxes/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGearBox(int id, [FromBody] GearBoxes gearBox)
+        public async Task<IActionResult> PutGearBox(int id, [FromBody] GearBox gearBox)
         {
-            if (id != gearBox?.Id)
+            if (id != gearBox?.GearBoxId)
             {
                 return BadRequest();
             }
@@ -70,7 +70,7 @@ namespace CarAssistance.Controllers
 
         // POST: api/GearBoxes
         [HttpPost]
-        public async Task<ActionResult<GearBoxes>> PostGearBox([FromBody] GearBoxes gearBox)
+        public async Task<ActionResult<GearBox>> PostGearBox([FromBody] GearBox gearBox)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace CarAssistance.Controllers
 
         // DELETE: api/GearBoxes/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<GearBoxes>> DeleteGearBox(int id)
+        public async Task<ActionResult<GearBox>> DeleteGearBox(int id)
         {
             var gearBox = await _unitOfWork.GearBoxRepo.GetByIdAsync(id).ConfigureAwait(false);
             if (gearBox == null)

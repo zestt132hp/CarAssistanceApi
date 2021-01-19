@@ -2,8 +2,8 @@
 
 namespace CarAssistance.Data.IRepos
 {
-    public interface IFuelTypeRepo : IRepository<Fuel>
+    public interface IFuelTypeRepo : IRepository<FuelType>
     {
-        void Update(Fuel fuelType);
+        void Update(FuelType fuelType);
     }
 }

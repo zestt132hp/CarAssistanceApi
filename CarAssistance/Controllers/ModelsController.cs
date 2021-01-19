@@ -44,7 +44,7 @@ namespace CarAssistance.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutModel(int id, Model model)
         {
-            if (id != model?.Id)
+            if (id != model?.ModelId)
             {
                 return BadRequest();
             }
@@ -77,7 +77,7 @@ namespace CarAssistance.Controllers
             _context.Models.Add(model);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetModel", new { id = model?.Id }, model);
+            return CreatedAtAction("GetModel", new { id = model?.ModelId }, model);
         }
 
         // DELETE: api/Models/5
@@ -98,7 +98,7 @@ namespace CarAssistance.Controllers
 
         private bool ModelExists(int id)
         {
-            return _context.Models.Any(e => e.Id == id);
+            return _context.Models.Any(e => e.ModelId == id);
         }
     }
 }
