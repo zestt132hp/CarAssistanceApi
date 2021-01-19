@@ -20,7 +20,7 @@ services:
         ports: 
             - "5432:5432"
         environment: 
-           - POSTGRES_DB=CarAssistance
+           - POSTGRES_DB=CarAssistanceDb
            - POSTGRES_USER=admin
            - POSTGRES_PASSWORD=qwe123
         volumes: 
