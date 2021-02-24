@@ -27,7 +27,7 @@ namespace CarAssistance.Controllers
         }
 
         // GET: api/BodyTypes
-        [HttpGet]
+        [HttpGet, Route("bodytypes")]
         public IEnumerable<BodyTypeDto> GetBodyType()
         {
             var bodyTypes = _repository.GetAll();

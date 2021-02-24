@@ -34,7 +34,7 @@ namespace CarAssistance.Controllers
         }
 
         // GET: api/Engines
-        [HttpGet]
+        [HttpGet, Route("engines")]
         public async Task<IEnumerable<EngineDto>> GetEngine()
         {
             var engines = await _repository.GetAllAsync().ConfigureAwait(false);

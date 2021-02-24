@@ -20,7 +20,7 @@ namespace CarAssistance.Controllers
         }
 
         // GET: api/Manufacters
-        [HttpGet]
+        [HttpGet, Route("manufacters")]
         public async Task<ActionResult<IEnumerable<Manufacters>>> GetManufacter()
         {
             return await _context.Manufacter.ToListAsync();

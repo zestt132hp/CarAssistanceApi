@@ -21,7 +21,7 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{219834CC-BD05-4B3B-B86F-51F69046B12C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{C503D7CE-91EF-4444-BF87-5460C20374A9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthApi", "AuthApi", "{C503D7CE-91EF-4444-BF87-5460C20374A9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarAssistance.Security.Api", "CarAssistance.Security.Api\CarAssistance.Security.Api.csproj", "{70D46DCA-DFD8-4B57-9B38-4DA2B45BC63B}"
 EndProject
@@ -29,19 +29,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{A8B0378D-E895-41C7-AC52-C65D64858F9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarAssistance.Infrastructure.Data", "CarAssistance.Infrastructure.Data\CarAssistance.Infrastructure.Data.csproj", "{1F9ABC3E-2B40-4C5D-8750-98D19DD76670}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarAssistance.Infrastructure.Data", "CarAssistance.Infrastructure.Data\CarAssistance.Infrastructure.Data.csproj", "{1F9ABC3E-2B40-4C5D-8750-98D19DD76670}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{CA86B8DC-CF38-4914-B1C4-D1D87215AE66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarAssistance.Domain", "CarAssistance.Domain\CarAssistance.Domain.csproj", "{DA0D3965-E1C8-4467-A6DA-63D035C3FD65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarAssistance.Domain", "CarAssistance.Domain\CarAssistance.Domain.csproj", "{DA0D3965-E1C8-4467-A6DA-63D035C3FD65}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{E9658017-2677-4DAE-95D4-A6E400BCC5A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAuthApplication", "..\UserAuthApplication\UserAuthApplication.csproj", "{D413BD39-5457-4239-AB7B-98747E6951E8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{1DD23544-39DD-4FC8-85B2-1EB06AFE29A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarAssistance.Identity", "..\CarAssistance.Identity\CarAssistance.Identity.csproj", "{A677188D-9566-4E8F-8CF1-1B41C61DDF9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarAssistance.CrossCutting.Identity", "..\CarAssistance.Identity\CarAssistance.CrossCutting.Identity.csproj", "{A677188D-9566-4E8F-8CF1-1B41C61DDF9F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtUserAuthApp", "CarAssistance.Application.JwtUserAuth\JwtUserAuthApp.csproj", "{C070C1EE-C339-46B0-9D72-530B6C84660D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CrossCutting", "CrossCutting", "{5F886F5A-6D6A-4FE1-8875-B07D4DA09DB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Identity", "Shared.Identity\Shared.Identity.csproj", "{5E2BF87C-ABFB-4FD6-9C1C-B14A1CEA102A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,14 +81,18 @@ Global
 		{DA0D3965-E1C8-4467-A6DA-63D035C3FD65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA0D3965-E1C8-4467-A6DA-63D035C3FD65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA0D3965-E1C8-4467-A6DA-63D035C3FD65}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D413BD39-5457-4239-AB7B-98747E6951E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D413BD39-5457-4239-AB7B-98747E6951E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D413BD39-5457-4239-AB7B-98747E6951E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D413BD39-5457-4239-AB7B-98747E6951E8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A677188D-9566-4E8F-8CF1-1B41C61DDF9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A677188D-9566-4E8F-8CF1-1B41C61DDF9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A677188D-9566-4E8F-8CF1-1B41C61DDF9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A677188D-9566-4E8F-8CF1-1B41C61DDF9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C070C1EE-C339-46B0-9D72-530B6C84660D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C070C1EE-C339-46B0-9D72-530B6C84660D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C070C1EE-C339-46B0-9D72-530B6C84660D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C070C1EE-C339-46B0-9D72-530B6C84660D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E2BF87C-ABFB-4FD6-9C1C-B14A1CEA102A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E2BF87C-ABFB-4FD6-9C1C-B14A1CEA102A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E2BF87C-ABFB-4FD6-9C1C-B14A1CEA102A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E2BF87C-ABFB-4FD6-9C1C-B14A1CEA102A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,9 +104,10 @@ Global
 		{A8B0378D-E895-41C7-AC52-C65D64858F9E} = {E3FE89C6-E5EC-478B-A760-B2A74E517AA5}
 		{1F9ABC3E-2B40-4C5D-8750-98D19DD76670} = {A8B0378D-E895-41C7-AC52-C65D64858F9E}
 		{DA0D3965-E1C8-4467-A6DA-63D035C3FD65} = {CA86B8DC-CF38-4914-B1C4-D1D87215AE66}
-		{D413BD39-5457-4239-AB7B-98747E6951E8} = {E9658017-2677-4DAE-95D4-A6E400BCC5A5}
-		{1DD23544-39DD-4FC8-85B2-1EB06AFE29A2} = {E3FE89C6-E5EC-478B-A760-B2A74E517AA5}
+		{1DD23544-39DD-4FC8-85B2-1EB06AFE29A2} = {5F886F5A-6D6A-4FE1-8875-B07D4DA09DB7}
 		{A677188D-9566-4E8F-8CF1-1B41C61DDF9F} = {1DD23544-39DD-4FC8-85B2-1EB06AFE29A2}
+		{C070C1EE-C339-46B0-9D72-530B6C84660D} = {E9658017-2677-4DAE-95D4-A6E400BCC5A5}
+		{5F886F5A-6D6A-4FE1-8875-B07D4DA09DB7} = {E3FE89C6-E5EC-478B-A760-B2A74E517AA5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14E45241-EDBA-4946-81AB-668C6284D6EF}

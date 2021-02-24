@@ -1,29 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using NetDevPack.Identity.Model;
 using Microsoft.AspNetCore.Identity;
-using NetDevPack.Identity.Jwt;
 using Microsoft.Extensions.Options;
+using Shared.Identity.Jwt;
+using Shared.Identity.ViewModel;
 
 namespace CarAssistance.Security.Api.Controllers
-{    
+{
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : BaseController
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly AppJwtSettings _appJwtSettings;
+        private readonly JwtSettings _appJwtSettings;
 
         public AccountController(
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
-            IOptions<AppJwtSettings> appJwtSettings)
+            IOptions<JwtSettings> appJwtSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;

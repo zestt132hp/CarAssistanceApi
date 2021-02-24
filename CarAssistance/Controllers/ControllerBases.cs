@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CarAssistance.Controllers
 {
+    [Authorize]
     public class ControllerBases:ControllerBase
     {
         public ControllerBases()

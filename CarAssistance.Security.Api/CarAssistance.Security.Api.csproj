@@ -10,7 +10,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
-    <PackageReference Include="NetDevPack.Identity" Version="1.2.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.2" />
   </ItemGroup>
 
@@ -19,8 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CarAssistance.Identity\CarAssistance.Identity.csproj" />
+    <ProjectReference Include="..\..\CarAssistance.Identity\CarAssistance.CrossCutting.Identity.csproj" />
     <ProjectReference Include="..\CarAssistance.Infrastructure.Data\CarAssistance.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\Shared.Identity\Shared.Identity.csproj" />
   </ItemGroup>
 
 

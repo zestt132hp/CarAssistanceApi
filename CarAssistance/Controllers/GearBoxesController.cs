@@ -20,7 +20,7 @@ namespace CarAssistance.Controllers
         }
 
         // GET: api/GearBoxes
-        [HttpGet]
+        [HttpGet, Route("gearboxes")]
         public IEnumerable<GearBoxes> GetGearBox()
         {
             return _unitOfWork.GearBoxRepo.GetByExpression();

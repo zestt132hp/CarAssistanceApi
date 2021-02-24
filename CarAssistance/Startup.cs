@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using CarAssistance.Configuration.SwaggerConfigurationExtension;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace CarAssistance
 {
@@ -29,29 +31,8 @@ namespace CarAssistance
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(option =>
-            //{
-            //    option.RequireHttpsMetadata = true;
-            //    option.TokenValidationParameters = new TokenValidationParameters()
-            //    {
-            //        ValidateIssuer = true,
-            //        ValidIssuer = AuthToken.ISSUER,
-            //        // будет ли валидироваться потребитель токена
-            //        ValidateAudience = true,
-            //        // установка потребителя токена
-            //        ValidAudience = AuthToken.AUDIENCE,
-            //        // будет ли валидироваться время существования
-            //        ValidateLifetime = true,
-
-            //        // установка ключа безопасности
-            //        IssuerSigningKey = AuthToken.GetSymmetricSecurityKey(),
-            //        // валидация ключа безопасности
-            //        ValidateIssuerSigningKey = true,
-            //    };
-            //});
-
             var configSection = Configuration.GetSection("ConnectionString:PsgConnection");
-            services.AddDbContext<Data.NpgSqlDataContext>(optionsAction => 
+            services.AddDbContext<Data.NpgSqlDataContext>(optionsAction =>
             {
                 optionsAction.UseNpgsql(configSection.Value);
             });
@@ -63,22 +44,19 @@ namespace CarAssistance
             services.AddSingleton(mapper);
 
             services.AddControllersWithViews();
-            services.AddSpaStaticFiles(config => config.RootPath = "ClientApp/dist");
-            services.AddSwaggerDocument(conf =>
-            {
-                conf.AddSecurity("Bearer", new NSwag.OpenApiSecurityScheme());
-                conf.PostProcess = document =>
+            services.AddSwaggerConfiguration();
+            services.AddAuthorization();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddCookie(option =>
                 {
-                    document.Info.Version = "v1";
-                    document.Info.Title = "CarAssistance API";
-                    document.Info.Contact = new NSwag.OpenApiContact
-                    {
-                        Name = "Nikolay Anikeev",
-                        Email = "n.anikeev@gmail.com",
-                        Url = "https://github.com/zestt132hp"
-                    };
-                };
-            });
+                    option.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/login");
+                    option.AccessDeniedPath = "/Account/logout";
+                })
+                .AddJwtBearer(option =>
+                {
+                    option.Authority = "https://localhost:5001/";
+                    option.Audience = "https://localhost:5001/Account/Login";
+                });
 
             services.AddMvc();
         }
@@ -90,30 +68,32 @@ namespace CarAssistance
         /// <param name="env">host environment</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //app.UseSpa(spa => spa.Options.SourcePath = "ClientApp");
             if (env.IsDevelopment())
             {
-                //app.UseSpa(spa => spa.UseAngularCliServer("start"));
                 app.UseDeveloperExceptionPage();
             }
             else
             {
+                app.UseExceptionHandler("/error/500");
+                app.UseStatusCodePagesWithRedirects("/error/{0}");
                 app.UseHsts();
             }
-
+            
             app.UseRouting();
-            //app.UseAuthorization();
-            app.UseEndpoints(endPoints =>
-                endPoints.MapControllers());
 
-            //app.UseAuthentication();
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.UseOpenApi();
-            //app.UseHttpsRedirection();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+            });
+            app.UseSwaggerSetup();
 
-            //app.UseSpaStaticFiles();
+            app.UseHttpsRedirection();
         }
     }
 }

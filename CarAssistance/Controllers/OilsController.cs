@@ -20,7 +20,7 @@ namespace CarAssistance.Controllers
         }
 
         // GET: api/Oils
-        [HttpGet]
+        [HttpGet, Route("oils")]
         public async Task<ActionResult<IEnumerable<OilInfo>>> GetOil()
         {
             return await _context.OilInfo.ToListAsync();

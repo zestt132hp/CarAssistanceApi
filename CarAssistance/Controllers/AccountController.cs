@@ -10,15 +10,16 @@ using CarAssistance.Data.Repository;
 
 namespace CarAssistance.Controllers
 {
-    [Route("/auth")]
-    public class AccountController:ControllerBases
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AccountController:ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         public AccountController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        [HttpGet, Route("")]
+        [HttpGet, Route("login")]
         public ViewResult AuthPage()
         {
             return null; // View("StaticFiles/index.html");

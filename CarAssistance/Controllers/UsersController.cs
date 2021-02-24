@@ -21,7 +21,7 @@ namespace CarAssistance.Controllers
         }
 
         // GET: api/Users
-        [HttpGet]
+        [HttpGet, Route("users")]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
             return await _context.Users.ToListAsync();

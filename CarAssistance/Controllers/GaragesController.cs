@@ -24,7 +24,7 @@ namespace CarAssistance.Controllers
         }
 
         // GET: api/Garages
-        [HttpGet]
+        [HttpGet, Route("garages")]
         public IEnumerable<GarageDto> GetGarage()
         {
             var allGarages = _unitOfWork.GarageRepos.GetByExpression(null, null,

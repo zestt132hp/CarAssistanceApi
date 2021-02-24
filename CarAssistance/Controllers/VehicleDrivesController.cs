@@ -22,7 +22,7 @@ namespace CarAssistance.Controllers
         }
 
         // GET: api/VehicleDrives
-        [HttpGet]
+        [HttpGet, Route("vehicleDrivers")]
         public async Task<ActionResult<IEnumerable<VehicleDrive>>> GetVehicleDrive()
         {
             return await _context.VehicleDrive.ToListAsync();

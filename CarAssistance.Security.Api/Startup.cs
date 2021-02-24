@@ -1,4 +1,4 @@
-using CarAssistance.Identity.Identity;
+using CarAssistance.CrossCutting.Identity;
 using CarAssistance.Security.Api.Configs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

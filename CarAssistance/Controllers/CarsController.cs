@@ -40,7 +40,7 @@ namespace CarAssistance.Controllers
         }
 
         // GET: api/Cars
-        [HttpGet]
+        [HttpGet, Route("cars")]
         public async Task<ActionResult<IEnumerable<CarDto>>> GetCar()
         {
             var cars = await _repository.GetAllAsync().ConfigureAwait(false);

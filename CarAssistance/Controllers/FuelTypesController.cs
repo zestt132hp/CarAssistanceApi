@@ -36,7 +36,7 @@ namespace CarAssistance.Controllers
         }
 
         // GET: api/FuelTypes
-        [HttpGet]
+        [HttpGet, Route("fueltypes")]
         public IEnumerable<FuelTypeDto> GetFuelType()
         {
             var entity = _repository.GetAll();

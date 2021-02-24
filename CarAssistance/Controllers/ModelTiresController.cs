@@ -20,7 +20,7 @@ namespace CarAssistance.Controllers
         }
 
         // GET: api/ModelTires
-        [HttpGet]
+        [HttpGet, Route("modeltires")]
         public async Task<ActionResult<IEnumerable<ModelTires>>> GetModelTires()
         {
             return await _context.ModelTires.ToListAsync();
